@@ -1,252 +1,757 @@
----
-doc_type: hypothesis-highlights
-url: >-
-  https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html
----
 
-# 基础语法-01-20
+### 1. 指针和引用
+- 指针和引用的区别 指针是一个变量，存储的是一个地址，引用跟原来的变量实质上是同一个东西，是原变量的别名 指针可以有多级，引用只有一级 指针可以为空，引用不能为NULL且在定义时必须初始化 指针在初始化后可以改变指向，而引用在初始化之后不可再改变 sizeof指针得到的是本指针的大小，sizeof引用得到的是引用所指向变量的大小 当把指针作为参数进行传递时，也是将实参的一个拷贝传递给形参，两者指向的地址相同，但不是同一个变量，在函数中改变这个变量的指向不影响实参，而引用却可以。 引用本质是一个指针，同样会占4字节内存；指针是具体变量，需要占用存储空间（，具体情况还要具体分析）。 引用在声明时必须初始化为另一变量，一旦出现必须为typename refname &varname形式；指针声明和定义可以分开，可以先只声明指针变量而不初始化，等用到时再指向具体变量。 引用一旦初始化之后就不可以再改变（变量可以被引用为多次，但引用只能作为一个变量引用）；指针变量可以重新指向别的变量。 不存在指向空值的引用，必须有具体实体；但是存在指向空值的指针。
 
-## Metadata
-- Author: [interviewguide.cn]()
-- Title: 基础语法-01-20
-- Reference: https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html
-- Category: #article
+- 在传递函数参数时，什么时候该使用指针，什么时候该使用引用呢？ 需要返回函数内局部变量的内存的时候用指针。使用指针传参需要开辟内存，用完要记得释放指针，不然会内存泄漏。而返回局部变量的引用是没有意义的 对栈空间大小比较敏感（比如递归）的时候使用引用。使用引用传递不需要创建临时变量，开销要更小 类对象作为参数传递的时候使用引用，这是C++类对象传递的标准方式
 
-## Page Notes
-## Highlights
-- 指针和引用的区别 指针是一个变量，存储的是一个地址，引用跟原来的变量实质上是同一个东西，是原变量的别名 指针可以有多级，引用只有一级 指针可以为空，引用不能为NULL且在定义时必须初始化 指针在初始化后可以改变指向，而引用在初始化之后不可再改变 sizeof指针得到的是本指针的大小，sizeof引用得到的是引用所指向变量的大小 当把指针作为参数进行传递时，也是将实参的一个拷贝传递给形参，两者指向的地址相同，但不是同一个变量，在函数中改变这个变量的指向不影响实参，而引用却可以。 引用本质是一个指针，同样会占4字节内存；指针是具体变量，需要占用存储空间（，具体情况还要具体分析）。 引用在声明时必须初始化为另一变量，一旦出现必须为typename refname &varname形式；指针声明和定义可以分开，可以先只声明指针变量而不初始化，等用到时再指向具体变量。 引用一旦初始化之后就不可以再改变（变量可以被引用为多次，但引用只能作为一个变量引用）；指针变量可以重新指向别的变量。 不存在指向空值的引用，必须有具体实体；但是存在指向空值的指针。 — [Updated on 2023-03-27 15:38:27](https://hyp.is/XO17rMxyEe2tc9cVRn0Slg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+### 2. 堆和栈
+- 堆和栈的区别 申请方式不同。 栈由系统自动分配。 堆是自己申请和释放的。 
+- 申请大小限制不同。 栈顶和栈底是之前预设好的，栈是向栈底扩展，大小固定，可以通过ulimit -a查看，由ulimit -s修改。 堆向高地址扩展，是不连续的内存区域，大小可以灵活调整。 
+- 申请效率不同。 栈由系统分配，速度快，不会有碎片。 堆由程序员分配，速度慢，且会有碎片。 栈空间默认是4M, 堆区一般是 1G - 4G 
+- 堆向上，向高地址方向增长。 栈向下，向低地址方向增长。 
 
-- 4、在传递函数参数时，什么时候该使用指针，什么时候该使用引用呢？ 需要返回函数内局部变量的内存的时候用指针。使用指针传参需要开辟内存，用完要记得释放指针，不然会内存泄漏。而返回局部变量的引用是没有意义的 对栈空间大小比较敏感（比如递归）的时候使用引用。使用引用传递不需要创建临时变量，开销要更小 类对象作为参数传递的时候使用引用，这是C++类对象传递的标准方式 — [Updated on 2023-03-27 15:57:47](https://hyp.is/EDChGsx1Ee22x7NyeZqiDQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+### 3. new、delete、malloc、free
+- new / delete 与 malloc / free的异同 
+- 相同点 都可用于内存的动态申请和释放 
+- 不同点 前者是C++运算符，后者是C/C++语言标准库函数 new自动计算要分配的空间大小，malloc需要手工计算 new是类型安全的，malloc不是。
 
-- 5、堆和栈的区别 申请方式不同。 栈由系统自动分配。 堆是自己申请和释放的。 申请大小限制不同。 栈顶和栈底是之前预设好的，栈是向栈底扩展，大小固定，可以通过ulimit -a查看，由ulimit -s修改。 堆向高地址扩展，是不连续的内存区域，大小可以灵活调整。 申请效率不同。 栈由系统分配，速度快，不会有碎片。 堆由程序员分配，速度慢，且会有碎片。 栈空间默认是4M, 堆区一般是 1G - 4G — [Updated on 2023-03-27 15:58:00](https://hyp.is/GDCsrMx1Ee2H1i-Lh5axZg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- new和delete是如何实现的？ new的实现过程是：首先调用名为operator new的标准库函数，分配足够大的原始为类型化的内存，以保存指定类型的一个对象；接下来运行该类型的一个构造函数，用指定初始化构造对象；最后返回指向新分配并构造后的的对象的指针 delete的实现过程：对指针指向的对象运行适当的析构函数；然后通过调用名为operator delete的标准库函数释放该对象所用内存 
 
-- 堆向上，向高地址方向增长。 栈向下，向低地址方向增长。 — [Updated on 2023-03-27 16:11:00](https://hyp.is/6Od0JMx2Ee2tDduU7gWvcw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- malloc和new的区别？ malloc和free是标准库函数，支持覆盖；new和delete是运算符，支持重载。 malloc仅仅分配内存空间，free仅仅回收空间，不具备调用构造函数和析构函数功能，用malloc分配空间存储类的对象存在风险；new和delete除了分配回收功能外，还会调用构造函数和析构函数。 malloc和free返回的是void类型指针（必须进行类型转换），new和delete返回的是具体类型指针
+- malloc是C中进行内存分配的函数，它的返回类型是void*即空类型指针，
 
-- 8、new / delete 与 malloc / free的异同 相同点 都可用于内存的动态申请和释放 不同点 前者是C++运算符，后者是C/C++语言标准库函数 new自动计算要分配的空间大小，malloc需要手工计算 new是类型安全的，malloc不是。例如： — [Updated on 2023-03-27 18:02:59](https://hyp.is/jZF1usyGEe2mAksLAHwQrA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
 
-- new和delete是如何实现的？ new的实现过程是：首先调用名为operator new的标准库函数，分配足够大的原始为类型化的内存，以保存指定类型的一个对象；接下来运行该类型的一个构造函数，用指定初始化构造对象；最后返回指向新分配并构造后的的对象的指针 delete的实现过程：对指针指向的对象运行适当的析构函数；然后通过调用名为operator delete的标准库函数释放该对象所用内存 — [Updated on 2023-03-27 18:05:50](https://hyp.is/87qmcsyGEe20AGNQT0NVQw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- 既然有了malloc/free，C++中为什么还需要new/delete呢？直接用malloc/free不好吗？ malloc/free和new/delete都是用来申请内存和回收内存的。 在对非基本数据类型的对象使用的时候，对象创建的时候还需要执行构造函数，销毁的时候要执行析构函数。而malloc/free是库函数，是已经编译的代码，所以不能把构造函数和析构函数的功能强加给malloc/free，所以new/delete是必不可少的。
 
-- malloc和new的区别？ malloc和free是标准库函数，支持覆盖；new和delete是运算符，支持重载。 malloc仅仅分配内存空间，free仅仅回收空间，不具备调用构造函数和析构函数功能，用malloc分配空间存储类的对象存在风险；new和delete除了分配回收功能外，还会调用构造函数和析构函数。 malloc和free返回的是void类型指针（必须进行类型转换），new和delete返回的是具体类型指针。 — [Updated on 2023-03-27 18:06:32](https://hyp.is/DNwezsyHEe2VWPOCYjpclw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- 被free回收的内存是立即返还给操作系统吗？ 不是的，被free回收的内存会首先被ptmalloc使用双链表保存起来，当用户下一次申请内存的时候，会尝试从这些内存中寻找合适的返回。这样就避免了频繁的系统调用，占用过多的系统资源。同时ptmalloc也会尝试对小块内存进行合并，避免过多的内存碎片。
 
-- 既然有了malloc/free，C++中为什么还需要new/delete呢？直接用malloc/free不好吗？ malloc/free和new/delete都是用来申请内存和回收内存的。 在对非基本数据类型的对象使用的时候，对象创建的时候还需要执行构造函数，销毁的时候要执行析构函数。而malloc/free是库函数，是已经编译的代码，所以不能把构造函数和析构函数的功能强加给malloc/free，所以new/delete是必不可少的。 — [Updated on 2023-03-27 18:07:05](https://hyp.is/ILNRVsyHEe20OouAuzMDpQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+### 4. 宏定义
+- 宏定义和函数有何区别？ 宏在预处理阶段完成替换，之后被替换的文本参与编译，相当于直接插入了代码，运行时不存在函数调用，执行起来更快；函数调用在运行时需要跳转到具体调用函数。 宏定义属于在结构中插入代码，没有返回值；函数调用具有返回值。 宏定义参数没有类型，不进行类型检查；函数参数具有类型，需要检查类型。 宏定义不要在最后加分号。
 
-- 12、被free回收的内存是立即返还给操作系统吗？ 不是的，被free回收的内存会首先被ptmalloc使用双链表保存起来，当用户下一次申请内存的时候，会尝试从这些内存中寻找合适的返回。这样就避免了频繁的系统调用，占用过多的系统资源。同时ptmalloc也会尝试对小块内存进行合并，避免过多的内存碎片。 — [Updated on 2023-03-27 19:17:13](https://hyp.is/7NSRpsyQEe2Uya--PSuVJw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- 内联函数和宏定义的区别 在使用时，宏只做简单字符串替换（编译前）。而内联函数可以进行参数类型检查（编译时），且具有返回值。 内联函数在编译时直接将函数代码嵌入到目标代码中，省去函数调用的开销来提高执行效率，并且进行参数类型检查，具有返回值，可以实现重载。 宏定义时要注意书写（参数要括起来）否则容易出现歧义，内联函数不会产生歧义 内联函数有类型检测、语法判断等功能，而宏没有 
 
-- 13、宏定义和函数有何区别？ 宏在预处理阶段完成替换，之后被替换的文本参与编译，相当于直接插入了代码，运行时不存在函数调用，执行起来更快；函数调用在运行时需要跳转到具体调用函数。 宏定义属于在结构中插入代码，没有返回值；函数调用具有返回值。 宏定义参数没有类型，不进行类型检查；函数参数具有类型，需要检查类型。 宏定义不要在最后加分号。 — [Updated on 2023-03-27 19:20:21](https://hyp.is/XIWcIMyREe2EAJvtnj63HA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
 
-- 14、宏定义和typedef区别？ 宏主要用于定义常量及书写复杂的内容；typedef主要用于定义类型别名。 宏替换发生在编译阶段之前，属于文本插入替换；typedef是编译的一部分。 宏不检查类型；typedef会检查数据类型。 宏不是语句，不在在最后加分号；typedef是语句，要加分号标识结束。 注意对指针的操作，typedef char * p_char和#define p_char char *区别巨大。 — [Updated on 2023-03-27 19:20:43](https://hyp.is/aaTBasyREe2x47N7cKl0PA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-01-basic.html) — Group: #Public
+- 宏定义和typedef区别？ 宏主要用于定义常量及书写复杂的内容；typedef主要用于定义类型别名。 宏替换发生在编译阶段之前，属于文本插入替换；typedef是编译的一部分。 宏不检查类型；typedef会检查数据类型。 宏不是语句，不在在最后加分号；typedef是语句，要加分号标识结束。 注意对指针的操作，typedef char * p_char和#define p_char char *区别巨大。
 
 
+### 5. struct与class
+- C++中struct和class的区别 相同点 两者都拥有成员函数、公有和私有部分 任何可以使用class完成的工作，同样可以使用struct完成 不同点 两者中如果不对成员不指定公私有，struct默认是公有的，class则默认是私有的 class默认是private继承， 而struct默认是public继承 
+- C++中struct和class的区别 相同点 两者都拥有成员函数、公有和私有部分 任何可以使用class完成的工作，同样可以使用struct完成 不同点 两者中如果不对成员不指定公私有，struct默认是公有的，class则默认是私有的 class默认是private继承， 而struct默认是public继承
 
+- C++中struct和class的区别 
+- 相同点 两者都拥有成员函数、公有和私有部分 任何可以使用class完成的工作，同样可以使用struct完成 
+- 不同点 两者中如果不对成员不指定公私有，struct默认是公有的，class则默认是私有的 class默认是private继承， 而struct默认是public继承 
 
+- static 不考虑类的情况 隐藏。所有不加static的全局变量和函数具有全局可见性，可以在其他文件中使用，加了之后只能在该文件所在的编译模块中使用 默认初始化为0，包括未初始化的全局静态变量与局部静态变量，都存在全局未初始化区 静态变量在函数内定义，始终存在，且只进行一次初始化，具有记忆性，其作用范围与局部变量相同，函数退出后仍然存在，但不能使用 
 
+- 考虑类的情况 static成员变量：只与类关联，不与类的对象关联。定义时要分配空间，不能在类声明中初始化，必须在类定义体外部初始化，初始化时不需要标示为static；可以被非static成员函数任意访问。 static成员函数：不具有this指针，无法访问类对象的非static成员变量和非static成员函数；不能被声明为const、虚函数和volatile；可以被非static成员函数任意访问 
 
+- const 不考虑类的情况 const常量在定义时必须初始化，之后无法更改 const形参可以接收const和非const类型的实参，例如// i 可以是 int 型或者 const int 型void fun(const int& i){ //...} 考虑类的情况 const成员变量：不能在类定义外部初始化，只能通过构造函数初始化列表进行初始化，并且必须有构造函数；不同类对其const数据成员的值可以不同，所以不能在类中声明时初始化 const成员函数：const对象不可以调用非const成员函数；非const对象都可以调用；不可以改变非mutable（用该关键字声明的变量可以在const成员函数中被修改）数据的值 
 
+### 6. 数组名和指针
+- 数组名和指针（这里为指向数组首元素的指针）区别？ 二者均可通过增减偏移量来访问数组中的元素。 数组名不是真正意义上的指针，可以理解为常指针，所以数组名没有自增、自减等操作。 当数组名当做形参传递给调用函数后，就失去了原有特性，退化成一般指针，多了自增、自减操作，但sizeof运算符不能再得到原数组的大小了。
 
+### 7. override与final
+- override的作用就出来了，它指定了子类的这个虚函数是重写的父类的，如果你名字不小心打错了的话，编译器是不会编译通过的
 
+- final 当不希望某个类被继承，或不希望某个虚函数被重写，可以在类名和虚函数后添加final关键字，添加final关键字后被继承或重写，编译器会报错。
 
+### 8. 构造函数
+- 直接初始化直接调用与实参匹配的构造函数，拷贝初始化总是调用拷贝构造函数。拷贝初始化首先使用指定构造函数创建一个临时对象，然后用拷贝构造函数将那个临时对象拷贝到正在创建的对象 
 
+- 为了能够正确的在C++代码中调用C语言的代码：在程序中加上extern "C"后，相当于告诉编译器这部分代码是C语言写的，因此要按照C语言进行编译，而不是C++； 哪些情况下使用extern "C"： （1）C++代码中调用C语言代码； （2）在C++中的头文件中使用； （3）在多个人协同开发时，可能有人擅长C语言，而有人擅长C++；
 
+### 9.野指针与悬空指针
 
+- 野指针和悬空指针 都是是指向无效内存区域(这里的无效指的是"不安全不可控")的指针，访问行为将会导致未定义行为。 野指针 野指针，指的是没有被初始化过的指针 
 
+- 因此，为了防止出错，对于指针初始化时都是赋值为 nullptr，这样在使用时编译器就不会直接报错，产生非法内存访问。 悬空指针 悬空指针，指针最初指向的内存已经被释放了的一种指针。 
 
+- 需要设置为p=p2=nullptr。此时再使用，编译器会直接保错。 避免野指针比较简单，但悬空指针比较麻烦。c++引入了智能指针，C++智能指针的本质就是避免悬空指针的产生。 
 
----
-doc_type: hypothesis-highlights
-url: >-
-  https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html
----
+- 野指针：指针变量未及时初始化 => 定义指针变量及时初始化，要么置空。 悬空指针：指针free或delete之后没有及时置空 => 释放操作后立即置空。
 
-# 基础语法-21-40
+- 操作符new返回的指针类型严格与对象匹配，而不是void* 
 
-## Metadata
-- Author: [interviewguide.cn]()
-- Title: 基础语法-21-40
-- Reference: https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html
-- Category: #article
+## 33、C++中的重载、重写（覆盖）和隐藏的区别 
+- （1）重载（overload） 重载是指在同一范围定义中的同名成员函数才存在重载关系。主要特点是函数名相同，参数类型和数目有所不同，不能出现参数个数和类型均相同，仅仅依靠返回值不同来区分的函数。重载和函数成员是否是虚函数无关 
 
-## Page Notes
-## Highlights
-- 22、C++中struct和class的区别 相同点 两者都拥有成员函数、公有和私有部分 任何可以使用class完成的工作，同样可以使用struct完成 不同点 两者中如果不对成员不指定公私有，struct默认是公有的，class则默认是私有的 class默认是private继承， 而struct默认是public继承 — [Updated on 2023-03-27 19:57:40](https://hyp.is/kz-CMMyWEe20K7Os95RgFQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- （2）重写（覆盖）（override） 重写指的是在派生类中覆盖基类中的同名函数，重写就是重写函数体，要求基类函数必须是虚函数且： 与基类的虚函数有相同的参数个数 与基类的虚函数有相同的参数类型 与基类的虚函数有相同的返回值类型
 
-- static 不考虑类的情况 隐藏。所有不加static的全局变量和函数具有全局可见性，可以在其他文件中使用，加了之后只能在该文件所在的编译模块中使用 默认初始化为0，包括未初始化的全局静态变量与局部静态变量，都存在全局未初始化区 静态变量在函数内定义，始终存在，且只进行一次初始化，具有记忆性，其作用范围与局部变量相同，函数退出后仍然存在，但不能使用 — [Updated on 2023-03-27 19:59:09](https://hyp.is/yFRovsyWEe2rmGecx5YjeA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- 重载与重写的区别： 重写是父类和子类之间的垂直关系，重载是不同函数之间的水平关系 重写要求参数列表相同，重载则要求参数列表不同，返回值不要求 重写关系中，调用方法根据对象类型决定，重载根据调用时实参表与形参表的对应关系来选择函数体
 
-- 考虑类的情况 static成员变量：只与类关联，不与类的对象关联。定义时要分配空间，不能在类声明中初始化，必须在类定义体外部初始化，初始化时不需要标示为static；可以被非static成员函数任意访问。 static成员函数：不具有this指针，无法访问类对象的非static成员变量和非static成员函数；不能被声明为const、虚函数和volatile；可以被非static成员函数任意访问 — [Updated on 2023-03-27 19:59:40](https://hyp.is/2s2_QMyWEe2VigdweVdEmA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- （3）隐藏（hide） 隐藏指的是某些情况下，派生类中的函数屏蔽了基类中的同名函数，包括以下情况： 两个函数参数相同，但是基类函数不是虚函数。**和重写的区别在于基类函数是否是虚函数。 
 
-- const 不考虑类的情况 const常量在定义时必须初始化，之后无法更改 const形参可以接收const和非const类型的实参，例如// i 可以是 int 型或者 const int 型void fun(const int& i){ //...} 考虑类的情况 const成员变量：不能在类定义外部初始化，只能通过构造函数初始化列表进行初始化，并且必须有构造函数；不同类对其const数据成员的值可以不同，所以不能在类中声明时初始化 const成员函数：const对象不可以调用非const成员函数；非const对象都可以调用；不可以改变非mutable（用该关键字声明的变量可以在const成员函数中被修改）数据的值 — [Updated on 2023-03-27 20:00:00](https://hyp.is/5t2IGsyWEe2TZ4Mq0tl3zw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- Annotation: 重定义
+- 两个函数参数不同，无论基类函数是不是虚函数，都会被隐藏。和重载的区别在于两个函数不在同一个类中。
 
-- 26、数组名和指针（这里为指向数组首元素的指针）区别？ 二者均可通过增减偏移量来访问数组中的元素。 数组名不是真正意义上的指针，可以理解为常指针，所以数组名没有自增、自减等操作。 当数组名当做形参传递给调用函数后，就失去了原有特性，退化成一般指针，多了自增、自减操作，但sizeof运算符不能再得到原数组的大小了。 # — [Updated on 2023-03-27 20:47:58](https://hyp.is/miHr1sydEe2uGKdogWOMSA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+## 34、C++有哪几种的构造函数
+- C++中的构造函数可以分为4类：
+- 默认构造函数 
+- 初始化构造函数（有参数） 
+- 拷贝构造函数 
+- 移动构造函数（move和右值引用） 
+- 委托构造函数 
+- 转换构造函数 (一个参)
 
-- override的作用就出来了，它指定了子类的这个虚函数是重写的父类的，如果你名字不小心打错了的话，编译器是不会编译通过的： — [Updated on 2023-03-27 20:49:51](https://hyp.is/3Vqx0MydEe237JcgSG7XZQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+### 默认构造函数
+- 默认构造函数和初始化构造函数在定义类的对象，完成对象的初始化工作 
+- 复制构造函数用于复制本类的对象
 
-- final 当不希望某个类被继承，或不希望某个虚函数被重写，可以在类名和虚函数后添加final关键字，添加final关键字后被继承或重写，编译器会报错。 — [Updated on 2023-03-27 20:50:12](https://hyp.is/6durbMydEe20UOeSSouxSg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+### 拷贝构造函数
+拷贝构造函数中，对于指针，我们一定要采用深层复制
 
-- 直接初始化直接调用与实参匹配的构造函数，拷贝初始化总是调用拷贝构造函数。拷贝初始化首先使用指定构造函数创建一个临时对象，然后用拷贝构造函数将那个临时对象拷贝到正在创建的对象 — [Updated on 2023-03-27 20:59:03](https://hyp.is/JsCCpMyfEe2LOnNjGh9hsA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+### 移动构造函数
+- 移动构造函数我们用对象a初始化对象b，后对象a我们就不在使用了，但是对象a的空间还在呀（在析构之前），既然拷贝构造函数，实际上就是把a对象的内容复制一份到b中，那么为什么我们不能直接使用a的空间呢？这样就避免了新的空间的分配，大大降低了构造的成本。这就是移动构造函数设计的初衷
+- 移动构造函数中，对于指针，我们采用浅层复制；浅层复制之所以危险，是因为两个指针共同指向一片内存空间，若第一个指针将其释放，另一个指针的指向就不合法了。所以我们只要避免第一个指针释放空间就可以了。避免的方法就是将第一个指针（比如a->value）置为NULL，这样在调用析构函数的时候，由于有判断是否为NULL的语句，所以析构a的时候并不会回收a->value指向的空间；
+- 移动构造函数的初值是一个右值引用
+- 移动构造函数的参数是一个右值或者将亡值的引用。也就是说，只用用一个右值，或者将亡值初始化另一个对象的时候，才会调用移动构造函数。而那个move语句，就是将一个左值变成一个将亡值。
 
-- 为了能够正确的在C++代码中调用C语言的代码：在程序中加上extern "C"后，相当于告诉编译器这部分代码是C语言写的，因此要按照C语言进行编译，而不是C++； 哪些情况下使用extern "C"： （1）C++代码中调用C语言代码； （2）在C++中的头文件中使用； （3）在多个人协同开发时，可能有人擅长C语言，而有人擅长C++； — [Updated on 2023-03-27 21:00:43](https://hyp.is/YkxtVsyfEe2U_lukGEI6wg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+### 转换构造函数
+- 转换构造函数用于将其他类型的变量，隐式转换为本类对象 
 
-- 31、野指针和悬空指针 都是是指向无效内存区域(这里的无效指的是"不安全不可控")的指针，访问行为将会导致未定义行为。 野指针 野指针，指的是没有被初始化过的指针 — [Updated on 2023-03-27 21:02:45](https://hyp.is/qwwR4MyfEe2xlg-mo5UOJA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
 
-- 因此，为了防止出错，对于指针初始化时都是赋值为 nullptr，这样在使用时编译器就不会直接报错，产生非法内存访问。 悬空指针 悬空指针，指针最初指向的内存已经被释放了的一种指针。 — [Updated on 2023-03-27 21:02:53](https://hyp.is/r2xPwMyfEe2x9aPQVVSmgA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
 
-- 需要设置为p=p2=nullptr。此时再使用，编译器会直接保错。 避免野指针比较简单，但悬空指针比较麻烦。c++引入了智能指针，C++智能指针的本质就是避免悬空指针的产生。 — [Updated on 2023-03-27 21:03:03](https://hyp.is/tXMSbsyfEe2x9k-w49nFAg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
 
-- 野指针：指针变量未及时初始化 => 定义指针变量及时初始化，要么置空。 悬空指针：指针free或delete之后没有及时置空 => 释放操作后立即置空。 — [Updated on 2023-03-27 21:03:13](https://hyp.is/u640usyfEe2uHbeq70V5QQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+## 35、浅拷贝与深拷贝
+**浅拷贝**
 
-- 操作符new返回的指针类型严格与对象匹配，而不是void* — [Updated on 2023-03-27 21:04:51](https://hyp.is/9b6jsMyfEe2uIMdAFUgBSQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+浅拷贝只是拷贝一个指针，并没有新开辟一个地址，拷贝的指针和原来的指针指向同一块地址，如果原来的指针所指向的资源释放了，那么再释放浅拷贝的指针的资源就会出现错误。
+```c++
+//浅拷贝，当对象的name和传入对象的name指向相同的地址
+name = s.name;
+//深拷贝
+name = new char(20);
+memcpy(name, s.name, strlen(s.name));
+```
+**深拷贝**
 
-- 33、C++中的重载、重写（覆盖）和隐藏的区别 （1）重载（overload） 重载是指在同一范围定义中的同名成员函数才存在重载关系。主要特点是函数名相同，参数类型和数目有所不同，不能出现参数个数和类型均相同，仅仅依靠返回值不同来区分的函数。重载和函数成员是否是虚函数无关 — [Updated on 2023-03-27 21:05:45](https://hyp.is/Fi0UTMygEe2VAvPv4Xn0GA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+深拷贝不仅拷贝值，还开辟出一块新的空间用来存放新的值，即使原先的对象被析构掉，释放内存了也不会影响到深拷贝得到的值。在自己实现拷贝赋值的时候，如果有指针变量的话是需要自己实现深拷贝的。
 
-- （2）重写（覆盖）（override） 重写指的是在派生类中覆盖基类中的同名函数，重写就是重写函数体，要求基类函数必须是虚函数且： 与基类的虚函数有相同的参数个数 与基类的虚函数有相同的参数类型 与基类的虚函数有相同的返回值类型 — [Updated on 2023-03-27 21:06:04](https://hyp.is/IVex9sygEe2tf8tJ8YwH4Q/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+浅拷贝在对象的拷贝创建时存在风险，即被拷贝的对象析构释放资源之后，拷贝对象析构时会再次释放一个已经释放的资源，深拷贝的结果是两个对象之间没有任何关系，各自成员地址不同。
 
-- 重载与重写的区别： 重写是父类和子类之间的垂直关系，重载是不同函数之间的水平关系 重写要求参数列表相同，重载则要求参数列表不同，返回值不要求 重写关系中，调用方法根据对象类型决定，重载根据调用时实参表与形参表的对应关系来选择函数体 — [Updated on 2023-03-27 21:06:17](https://hyp.is/KN2lKsygEe2EMhuLjOn83Q/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
 
-- （3）隐藏（hide） 隐藏指的是某些情况下，派生类中的函数屏蔽了基类中的同名函数，包括以下情况： 两个函数参数相同，但是基类函数不是虚函数。**和重写的区别在于基类函数是否是虚函数。 — [Updated on 2023-03-27 21:07:06](https://hyp.is/Rib7SsygEe21OhekE6lQNg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
-    - Annotation: 重定义
-- 两个函数参数不同，无论基类函数是不是虚函数，都会被隐藏。和重载的区别在于两个函数不在同一个类中。举个例子： — [Updated on 2023-03-27 21:07:24](https://hyp.is/UNdzEsygEe25fIMFT_Qt7w/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+## 37、public，protected和private访问和继承权限/public/protected/private的区别？ 
+- public的变量和函数在类的内部外部都可以访问。 protected的变量和函数只能在类的内部和其派生类中访问。 private修饰的元素只能在类内访问。
 
-- 34、C++有哪几种的构造函数 C++中的构造函数可以分为4类： 默认构造函数 初始化构造函数（有参数） 拷贝构造函数 移动构造函数（move和右值引用） 委托构造函数 转换构造函数 — [Updated on 2023-03-27 21:09:21](https://hyp.is/loqZXMygEe23YcOWVn6KyQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- public继承 公有继承的特点是基类的公有成员和保护成员作为派生类的成员时，都保持原有的状态，而基类的私有成员任然是私有的，不能被这个派生类的子类所访问 
 
-- 默认构造函数和初始化构造函数在定义类的对象，完成对象的初始化工作 复制构造函数用于复制本类的对象 转换构造函数用于将其他类型的变量，隐式转换为本类对象 — [Updated on 2023-03-27 21:09:49](https://hyp.is/p34IwMygEe20i1PUfHbQyA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- protected继承 保护继承的特点是基类的所有公有成员和保护成员都成为派生类的保护成员，并且只能被它的派生类成员函数或友元函数访问，基类的私有成员仍然是私有的
 
-- 36、内联函数和宏定义的区别 在使用时，宏只做简单字符串替换（编译前）。而内联函数可以进行参数类型检查（编译时），且具有返回值。 内联函数在编译时直接将函数代码嵌入到目标代码中，省去函数调用的开销来提高执行效率，并且进行参数类型检查，具有返回值，可以实现重载。 宏定义时要注意书写（参数要括起来）否则容易出现歧义，内联函数不会产生歧义 内联函数有类型检测、语法判断等功能，而宏没有 — [Updated on 2023-03-27 21:41:35](https://hyp.is/F3MzXsylEe2qjGto88t-Hg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- private继承 私有继承的特点是基类的所有公有成员和保护成员都成为派生类的私有成员，并不被它的派生类的子类所访问，基类的成员只能由自己派生类访问，无法再往下继承
+| 访问权限  | 外部 | 派生类 | 内部 |
+| --------- | ---- | ------ | ---- |
+| public    | √    | √      | √    |
+| protected | ×    | √      | √    |
+| private   | ×    | ×      | √    |
 
-- 37、public，protected和private访问和继承权限/public/protected/private的区别？ public的变量和函数在类的内部外部都可以访问。 protected的变量和函数只能在类的内部和其派生类中访问。 private修饰的元素只能在类内访问。 — [Updated on 2023-03-27 21:42:20](https://hyp.is/MinmjsylEe2LV6_oneulxA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
 
-- public继承 公有继承的特点是基类的公有成员和保护成员作为派生类的成员时，都保持原有的状态，而基类的私有成员任然是私有的，不能被这个派生类的子类所访问 — [Updated on 2023-03-27 21:52:54](https://hyp.is/rG6knMymEe20fsOxX5djxw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+1.  派生类继承自基类的成员权限有四种状态：public、protected、private、不可见
+2.  派生类对基类成员的访问权限取决于两点：一、继承方式；二、基类成员在基类中的访问权限
+3.  派生类对基类成员的访问权限是取以上两点中的更小的访问范围（除了 private 的继承方式遇到 private 成员是不可见外）。
 
-- protected继承 保护继承的特点是基类的所有公有成员和保护成员都成为派生类的保护成员，并且只能被它的派生类成员函数或友元函数访问，基类的私有成员仍然是私有的，访问规则如下表 — [Updated on 2023-03-27 21:52:58](https://hyp.is/ru64QsymEe2WMv8PFY3wFw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+## define const
+define是在编译的预处理阶段起作用，而const是在编译、运行的时候起作用
 
-- private继承 私有继承的特点是基类的所有公有成员和保护成员都成为派生类的私有成员，并不被它的派生类的子类所访问，基类的成员只能由自己派生类访问，无法再往下继承，访问规则如下表 — [Updated on 2023-03-27 21:53:07](https://hyp.is/s9-CWsymEe2qk-ff4qey_g/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- define只做替换，不做类型检查和计算，也不求解，容易产生错误，一般最好加上一个大括号包含住全部的内容，要不然很容易出错 const常量有数据类型，编译器可以对其进行类型安全检查 
 
-- 大端存储：字数据的高字节存储在低地址中 小端存储：字数据的低字节存储在低地址中 — [Updated on 2023-03-27 21:54:58](https://hyp.is/9nedoMymEe2WhrN56qZjdQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-02-basic.html) — Group: #Public
+- define只是将宏名称进行替换，在内存中会产生多分相同的备份。const在程序运行中只有一份备份，且可以执行常量折叠，能将复杂的的表达式计算出结果放入常量表 宏替换发生在编译阶段之前，属于文本插入替换；const作用发生于编译过程中。 宏不检查类型；const会检查数据类型。 宏定义的数据没有分配内存空间，只是插入替换掉；const定义的变量只是值不能改变，但要分配内存空间。 
 
+## Volatile  MESI优化和引入的问题
+缓存的一致性消息传递是需要的时间，这就使其切换时产生延迟。当一个缓存被切换状态时，其他缓存收到消息，完成各自的切换并且发出回应消息，这么一长串的时间中，CPU都会等待所有缓存响应完成。可能出现的阻塞都会导致各种各样的性能问题和稳定性问题；
 
+**Store Bufferes**
+CPU0 只需要在写入共享数据时，直接把数据写入到 store bufferes中，同时发送invalidate消息，然后继续去处理其他指令（异步） 当收到其他所有 CPU 发送了invalidate acknowledge消息时，再将store bufferes中的数据数据存储至缓存行中，最后再从缓存行同步到主内存。但是这种优化就会带来了可见性问题，也可以认为是CPU的乱序执行引起的或者说是指令重排序(指令重排序不仅仅在CPU层面存在，编译器层面也存在指令重排序)。  
+我们通过下面一个简单的示例来看一下指令重排序带来的问题。
 
+处理器会尝试从存储缓存（Store Bufferes）中读取值，但他还没有进行提交。这个的解决方案为Store Forwarding，他使得加载的时候，如果存储缓存中存在，则进行返回。
+保存什么时候会完成，无法保证，可能会断电丢失。
 
+指令重排导致的可见性问题可能会导致数据的不一致。CPU就给我们提供了一直通过软件告知CPU什么指令不能重排，什么指令能重排的机制就是**内存屏障**。
 
+CPU知道什么时候需要加入内存屏障，什么时候不需要吗？CPU将这个加入内存屏障的时机交给了程序员。
 
+CPU内存屏障主要分为以下三类：  
+**写屏障(Store Memory Barrier)**：告诉处理器在写屏障之前的所有已经存储在存储缓存(store bufferes)中的数据同步到主内存，简单来说就是使得写屏障之前的指令的结果对写屏障之后的读或者写是可见的。  
+**读屏障(Load Memory Barrier)**：处理器在读屏障之后的读操作,都在读屏障之后执行。配合写屏障，使得写屏障之前的内存更新对于读屏障之后的读操作是可见的。  
+**全屏障(Full Memory Barrier)**：确保屏障前的内存读写操作的结果提交到内存之后，再执行屏障后的读写操作。
 
+内存屏障的作用可以通过防止 CPU 对内存的乱序访问来保证共享数据在多线程并行执行下的可见性，但是这个屏障怎么来加呢？回到最开始我们讲 volatile关键字的代码，这个关键字会生成一个 lock 的汇编指令，这个就相当于实现了一种内存屏障。接下来我们进入volatile原理分析的正题
 
 
 
+**volatile**关键字的作用和原理。
+1.  被**volatile**关键字修饰的共享变量进行写操作的时候会被添加上**LOCK**指令，从而会引发两件事情。
+    - 将当前处理器缓存行的数据写回到主存；
+    - 由于**缓存一致性协议**，写回主存的操作会使其它处理器对该数据的缓存失效，从而需要重新从主存中加载最新数据。
+2.  被**volatile**关键字修饰的共享变量在生成字节码时，会在指令序列中插入内存屏障来禁止特定类型的处理器重排序。
+3. ==告诉编译器与volatile变量相关的运算不要优化==
+
+上述第一点是**volatile**提供的**可见性**，上述第二点是**volatile**提供的**有序性**。
+
+
+## mutable
+mutable的中文意思是“可变的，易变的”，跟constant（既C++中的const）是反义词。在C++中，mutable也是为了突破const的限制而设置的。被mutable修饰的变量，将永远处于可变的状态，即使在一个const函数中。我们知道，如果类的成员函数不会改变对象的状态，那么这个成员函数一般会声明成const的。但是，有些时候，我们需要**在const函数里面修改一些跟类状态无关的数据成员，那么这个函数就应该被mutable来修饰，并且放在函数后后面关键字位置**。
+
+## explicit
+
+explicit关键字用来修饰类的构造函数，被修饰的构造函数的类，不能发生相应的隐式类型转换，只能以**显示的方式进行类型转换**，注意以下几点：
+
+-   explicit 关键字只能用于类内部的构造函数声明上
+    
+-   explicit 关键字作用于单个参数的构造函数
+    
+-   被explicit修饰的构造函数的类，不能发生相应的隐式类型转换
 
+## 几种new
 
+在C++中，new有三种典型的使用方法：plain new，nothrow new和placement new
 
+### plain new
 
+言下之意就是普通的new，就是我们常用的new
+```c++
+void* operator new(std::size_t) throw(std::bad_alloc);
+void operator delete(void *) throw();
+```
+**plain new**在空间分配失败的情况下，抛出异常**std::bad_alloc**而不是返回NULL，因此通过判断返回值是否为NULL是徒劳的
 
+### nothrow new
+nothrow new在空间分配失败的情况下是不抛出异常，而是返回NULL
+```c++
+void * operator new(std::size_t,const std::nothrow_t&) throw();
+void operator delete(void*) throw();
+```
 
+### placement new
+这种new允许在一块已经分配成功的内存上重新构造对象或对象数组。placement new不用担心内存分配失败，因为它根本不分配内存，它做的唯一一件事情就是调用对象的构造函数
+```c++
+void* operator new(size_t,void*);
+void operator delete(void*,void*);
+```
+- palcement new的主要用途就是反复使用一块较大的动态分配的内存来构造不同类型的对象或者他们的数组 
 
+- placement new构造起来的对象数组，要显式的调用他们的析构函数来销毁（析构函数并不释放对象的内存），千万不要使用delete，这是因为placement new构造起来的对象或数组大小并不一定等于原来分配的内存大小，使用delete会造成内存泄漏或者之后释放内存时出现运行时错误。
 
+```C++
+#include <iostream>
+#include <string>
+using namespace std;
+class ADT{
+	int i;
+	int j;
+public:
+	ADT(){
+		i = 10;
+		j = 100;
+		cout << "ADT construct i=" << i << "j="<<j <<endl;
+	}
+	~ADT(){
+		cout << "ADT destruct" << endl;
+	}
+};
+int main()
+{
+	char *p = new(nothrow) char[sizeof ADT + 1];
+	if (p == NULL) {
+		cout << "alloc failed" << endl;
+	}
+	ADT *q = new(p) ADT;  //placement new:不必担心失败，只要p所指对象的的空间足够ADT创建即可
+	//delete q;//错误!不能在此处调用delete q;
+	q->ADT::~ADT();//显示调用析构函数
+	delete[] p;
+	return 0;
+}
+//输出结果：
+//ADT construct i=10j=100
+//ADT destruct
+```
 
 
+## 值传递、指针传递、引用传递的区别和效率 
+- 值传递：有一个形参向函数所属的栈拷贝数据的过程，如果值传递的对象是类对象 或是大的结构体对象，将耗费一定的时间和空间。==（传值）==
+- 指针传递：同样有一个形参向函数所属的栈拷贝数据的过程，但拷贝的数据是一个固定为4字节的地址。==（传值，传递的是地址值）==
+- 引用传递：同样有上述的数据拷贝过程，但其是针对地址的，相当于为该数据所在的地址起了一个别名。==（传地址） ==
+- 效率上讲，指针传递和引用传递比值传递效率高。一般==主张使用引用传递==，代码逻辑上更加紧凑、清晰。 
 
+## 43、static的用法和作用？ 
+1. 先来介绍它的第一条也是最重要的一条：隐藏。（static函数，static变量均可） 当同时编译多个文件时，所有未加static前缀的全局变量和函数都具有全局可见性。 
+2. static的第二个作用是保持变量内容的持久。（static变量中的记忆功能和全局生存期）存储在静态数据区的变量会在程序刚开始运行时就完成初始化，也是唯一的一次初始化。共有两种变量存储在静态存储区：全局变量和static变量，只不过和全局变量比起来，static可以控制变量的可见范围，说到底static还是用来隐藏的。
+3. static的第三个作用是默认初始化为0（static变量）
+4. static的第四个作用：
+	C++中的类成员声明static 
+	- 函数体内static变量的作用范围为该函数体，不同于auto变量，该变量的内存只被分配一次，因此其值在下次调用时仍维持上次的值； 
+	- 在模块内的static全局变量可以被模块内所有函数访问，但不能被模块外其它函数访问； 
+	- 在模块内的static函数只可被这一模块内的其它函数调用，这个函数的使用范围被限制在声明它的模块内； 
+	- 在类中的static成员变量属于整个类所拥有，对类的所有对象只有一份拷贝； 
+	- 在类中的static成员函数属于整个类所拥有，这个函数不接收this指针，因而只能访问类的static成员变量。 
+	类内：
+	- static类对象必须要在类外进行初始化，static修饰的变量先于对象存在，所以static修饰的变量要在类外初始化； 
+	- 由于static修饰的类成员属于类，不属于对象，因此static类成员函数是没有this指针的，this指针是指向本对象的指针。正因为没有this指针，所以static类成员函数不能访问非static的类成员，只能访问 static修饰的类成员； 
+	- static成员函数不能被virtual修饰，static成员不属于任何对象或实例，所以加上virtual没有任何实际意义；静态成员函数没有this指针，虚函数的实现是为每一个对象分配一个vptr指针，而vptr是通过this指针调用的，所以不能为virtual；虚函数的调用关系，this->vptr->ctable->virtual function
 
+## 形参与实参的区别？
+1. 形参变量只有在被调用时才分配内存单元，在调用结束时， 即刻释放所分配的内存单元。因此，形参只有在函数内部有效。 函数调用结束返回主调函数后则不能再使用该形参变量。
+2. 实参可以是常量、变量、表达式、函数等， 无论实参是何种类型的量，在进行函数调用时，它们都必须具有确定的值， 以便把这些值传送给形参。 因此应预先用赋值，输入等办法使实参获得确定值，会产生一个临时变量 
+3. 实参和形参在数量上，类型上，顺序上应严格一致， 否则会发生“类型不匹配”的错误。
+4. 函数调用中发生的数据传送是单向的。 即只能把实参的值传送给形参，而不能把形参的值反向地传送给实参。 因此在函数调用过程中，形参的值发生改变，而实参中的值不会变化。
+5. 当形参和实参不是指针类型时，在该函数运行时，形参和实参是不同的变量，他们在内存中位于不同的位置，形参将实参的内容复制一份，在该函数运行结束的时候形参被释放，而实参内容不会改变。
 
 
----
-doc_type: hypothesis-highlights
-url: >-
-  https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html
----
+## 静态变量什么时候初始化
 
-# 基础语法-41-60
+- 所以C++标准定为全局或静态对象是有首次用到时才会进行构造，并通过atexit()来管理。在程序结束，按照构造顺序反方向进行逐个析构。所以在C++中是可以使用变量对静态局部变量进行初始化的。 
 
-## Metadata
-- Author: [interviewguide.cn]()
-- Title: 基础语法-41-60
-- Reference: https://interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html
-- Category: #article
+- 在C中，初始化发生在代码执行之前，编译阶段分配好内存之后，就会进行初始化，所以我们看到在C语言中无法使用变量对静态局部变量进行初始化 
 
-## Page Notes
-## Highlights
-- palcement new的主要用途就是反复使用一块较大的动态分配的内存来构造不同类型的对象或者他们的数组 — [Updated on 2023-03-30 17:06:52](https://hyp.is/Nmymgs7aEe2nDisbMWqQLg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+## const作用
+- 阻止一个变量被改变，可以使用const关键字。在定义该const变量时，通常需要对它进行初始化，因为以后就没有机会再去改变它了；
 
-- placement new构造起来的对象数组，要显式的调用他们的析构函数来销毁（析构函数并不释放对象的内存），千万不要使用delete，这是因为placement new构造起来的对象或数组大小并不一定等于原来分配的内存大小，使用delete会造成内存泄漏或者之后释放内存时出现运行时错误。 — [Updated on 2023-03-30 17:07:06](https://hyp.is/Po9InM7aEe2IHU8cAdp7Xw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 对指针来说，可以指定指针本身为const，也可以指定指针所指的数据为const，或二者同时指定为const；
 
-- 值传递、指针传递、引用传递的区别和效率 值传递：有一个形参向函数所属的栈拷贝数据的过程，如果值传递的对象是类对象 或是大的结构体对象，将耗费一定的时间和空间。（传值） 指针传递：同样有一个形参向函数所属的栈拷贝数据的过程，但拷贝的数据是一个固定为4字节的地址。（传值，传递的是地址值） 引用传递：同样有上述的数据拷贝过程，但其是针对地址的，相当于为该数据所在的地址起了一个别名。（传地址） 效率上讲，指针传递和引用传递比值传递效率高。一般主张使用引用传递，代码逻辑上更加紧凑、清晰。 # — [Updated on 2023-03-30 17:25:15](https://hyp.is/x21-ys7cEe2cNFdRDdbbwA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 在一个函数声明中，const可以修饰形参，表明它是一个输入参数，在函数内部不能改变其值； 
 
-- 43、static的用法和作用？ 1.先来介绍它的第一条也是最重要的一条：隐藏。（static函数，static变量均可） 当同时编译多个文件时，所有未加static前缀的全局变量和函数都具有全局可见性。 2.static的第二个作用是保持变量内容的持久。（static变量中的记忆功能和全局生存期）存储在静态数据区的变量会在程序刚开始运行时就完成初始化，也是唯一的一次初始化。共有两种变量存储在静态存储区：全局变量和static变量，只不过和全局变量比起来，static可以控制变量的可见范围，说到底static还是用来隐藏的。 — [Updated on 2023-04-05 15:29:11](https://hyp.is/j3lJxtODEe2NPHM1Jyu1Zw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- ==对于类的成员函数，若指定其为const类型，则表明其是一个常函数，不能修改类的成员变量，类的常对象只能访问类的常成员函数；== 
 
-- 4.static的第四个作用：C++中的类成员声明static 函数体内static变量的作用范围为该函数体，不同于auto变量，该变量的内存只被分配一次，因此其值在下次调用时仍维持上次的值； 在模块内的static全局变量可以被模块内所有函数访问，但不能被模块外其它函数访问； 在模块内的static函数只可被这一模块内的其它函数调用，这个函数的使用范围被限制在声明它的模块内； 在类中的static成员变量属于整个类所拥有，对类的所有对象只有一份拷贝； 在类中的static成员函数属于整个类所拥有，这个函数不接收this指针，因而只能访问类的static成员变量。 — [Updated on 2023-04-05 15:29:47](https://hyp.is/pIF7QNODEe2oqJvx8WJ_kA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- const成员函数可以访问非const对象的非const数据成员、const数据成员，也可以访问const对象内的所有数据成员； 
 
-- static类对象必须要在类外进行初始化，static修饰的变量先于对象存在，所以static修饰的变量要在类外初始化； 由于static修饰的类成员属于类，不属于对象，因此static类成员函数是没有this指针的，this指针是指向本对象的指针。正因为没有this指针，所以static类成员函数不能访问非static的类成员，只能访问 static修饰的类成员； static成员函数不能被virtual修饰，static成员不属于任何对象或实例，所以加上virtual没有任何实际意义；静态成员函数没有this指针，虚函数的实现是为每一个对象分配一个vptr指针，而vptr是通过this指针调用的，所以不能为virtual；虚函数的调用关系，this->vptr->ctable->virtual function # — [Updated on 2023-04-05 15:29:57](https://hyp.is/qtAeZtODEe2vknc61fTGaQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 非const成员函数可以访问非const对象的非const数据成员、const数据成员，但不可以访问const对象的任意数据成员；
 
-- 实参可以是常量、变量、表达式、函数等， 无论实参是何种类型的量，在进行函数调用时，它们都必须具有确定的值， 以便把这些值传送给形参。 因此应预先用赋值，输入等办法使实参获得确定值，会产生一个临时变量 — [Updated on 2023-04-05 15:48:01](https://hyp.is/MJdO5tOGEe2vt0OGSJP1yg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- const类型变量可以通过类型转换符const_cast将const类型转换为非const类型；
 
-- 当形参和实参不是指针类型时，在该函数运行时，形参和实参是不同的变量，他们在内存中位于不同的位置，形参将实参的内容复制一份，在该函数运行结束的时候形参被释放，而实参内容不会改变。 — [Updated on 2023-04-05 15:48:17](https://hyp.is/OmeVDNOGEe28FEv_Kr6eFg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- const类型变量必须定义的时候进行初始化，因此也导致如果类的成员变量有const类型的变量，那么该变量必须在类的初始化列表中进行初始化；
 
-- 。所以C++标准定为全局或静态对象是有首次用到时才会进行构造，并通过atexit()来管理。在程序结束，按照构造顺序反方向进行逐个析构。所以在C++中是可以使用变量对静态局部变量进行初始化的。 — [Updated on 2023-04-05 16:01:21](https://hyp.is/Dbyx8tOIEe2c-8N0wOq6Ng/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 但是在引用或指针传递函数调用中，因为传进去的是一个引用或指针，这样函数内部可以改变引用或指针所指向的变量，这时const 才是实实在在地保护了实参所指向的变量。
 
-- 在C中，初始化发生在代码执行之前，编译阶段分配好内存之后，就会进行初始化，所以我们看到在C语言中无法使用变量对静态局部变量进行初始化 — [Updated on 2023-04-05 16:01:30](https://hyp.is/EseCMNOIEe2NJGs6LS5L6w/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 有引用传递和指针传递可以用是否加const来重载。一个拥有顶层const的形参无法和另一个没有顶层const的形参区分开来。
 
-- 阻止一个变量被改变，可以使用const关键字。在定义该const变量时，通常需要对它进行初始化，因为以后就没有机会再去改变它了； 对指针来说，可以指定指针本身为const，也可以指定指针所指的数据为const，或二者同时指定为const； 在一个函数声明中，const可以修饰形参，表明它是一个输入参数，在函数内部不能改变其值； — [Updated on 2023-04-05 16:03:29](https://hyp.is/WiGpCNOIEe2vn0MuLQDl8g/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- **==const位于* 左侧时，修饰指针变量指向的内容，为底层const**==
+- **==const位于* 右侧时，修饰指针本身，为顶层const**==
+## 什么是类的继承？
+1.  类与类之间的关系
+	- has-A包含关系，用以描述一个类由多个部件类构成，实现has-A关系用类的成员属性表示，即一个类的成员属性是另一个已经定义好的类； 
+	- use-A，一个类使用另一个类，通过类之间的成员函数相互联系，定义友元或者通过传递参数的方式来实现； 
+	- is-A，继承关系，关系具有传递性； 
+	
+	- 所谓的继承就是一个类继承了另一个类的属性和方法，这个新的类包含了上一个类的属性和方法，被称为子类或者派生类，被继承的类称为父类或者基类；
 
-- 对于类的成员函数，若指定其为const类型，则表明其是一个常函数，不能修改类的成员变量，类的常对象只能访问类的常成员函数； — [Updated on 2023-04-05 16:09:53](https://hyp.is/PohDwtOJEe2de9_tO0RTcQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 子类拥有父类的所有属性和方法，子类可以拥有父类没有的属性和方法，子类对象可以当做父类对象使用； 
 
-- const成员函数可以访问非const对象的非const数据成员、const数据成员，也可以访问const对象内的所有数据成员； — [Updated on 2023-04-05 16:10:40](https://hyp.is/WwLxPNOJEe248deXICnDVA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+## new  delete malloc free
+ 
+- 3、 new操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故new是符合类型安全性的操作符。而malloc内存分配成功则是返回void * ，需要通过强制类型转换将void*指针转换成我们需要的类型。
 
-- 非const成员函数可以访问非const对象的非const数据成员、const数据成员，但不可以访问const对象的任意数据成员； — [Updated on 2023-04-05 16:10:57](https://hyp.is/ZOjlxtOJEe2UNAcooHHbWw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 1、 new/delete是C++关键字，需要编译器支持。malloc/free是库函数，需要头文件支持； 2、 使用new操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算。而malloc则需要显式地指出所需内存的尺寸。 
 
-- const类型变量可以通过类型转换符const_cast将const类型转换为非const类型； — [Updated on 2023-04-05 16:12:28](https://hyp.is/mzHJGNOJEe22qqN8387MwA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 4、 new内存分配失败时，会抛出bac_alloc异常。malloc分配内存失败时返回NULL。 5、 new会先调用operator new函数，申请足够的内存（通常底层使用malloc实现）。然后调用类型的构造函数，初始化成员变量，最后返回自定义类型指针。delete先调用析构函数，然后调用operator delete函数释放内存（通常底层使用free实现）。malloc/free是库函数，只能动态的申请和释放内存，无法强制要求其做自定义类型对象构造和析构工作。 
 
-- const类型变量必须定义的时候进行初始化，因此也导致如果类的成员变量有const类型的变量，那么该变量必须在类的初始化列表中进行初始化； — [Updated on 2023-04-05 16:12:37](https://hyp.is/oM-UItOJEe2HoUPqRyYXqw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 动态数组管理new一个数组时，[]中必须是一个整数，但是不一定是常量整数，普通数组必须是一个常量整数； 
 
-- 但是在引用或指针传递函数调用中，因为传进去的是一个引用或指针，这样函数内部可以改变引用或指针所指向的变量，这时const 才是实实在在地保护了实参所指向的变量。 — [Updated on 2023-04-05 16:13:06](https://hyp.is/sY8EeNOJEe2Vbp_dr8uAYA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- new动态数组返回的并不是数组类型，而是一个元素类型的指针；
 
-- 有引用传递和指针传递可以用是否加const来重载。一个拥有顶层const的形参无法和另一个没有顶层const的形参区分开来。 — [Updated on 2023-04-05 16:13:22](https://hyp.is/u21-hNOJEe2DJ7epErE5Eg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 3、 delete[]时，数组中的元素按逆序的顺序进行销毁；
+		对于内置数据类型，delete = delete[]
 
-- has-A包含关系，用以描述一个类由多个部件类构成，实现has-A关系用类的成员属性表示，即一个类的成员属性是另一个已经定义好的类； use-A，一个类使用另一个类，通过类之间的成员函数相互联系，定义友元或者通过传递参数的方式来实现； is-A，继承关系，关系具有传递性； — [Updated on 2023-04-05 16:17:36](https://hyp.is/UpqrztOKEe2v-ie8gSDFMg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+```c++
+	char *p = new char[100];
+	delete p[];
+	//delete p;
+	//不会造成内存泄漏，但不建议使用
+```
 
-- 所谓的继承就是一个类继承了另一个类的属性和方法，这个新的类包含了上一个类的属性和方法，被称为子类或者派生类，被继承的类称为父类或者基类； — [Updated on 2023-04-05 16:17:51](https://hyp.is/W6a9jtOKEe2_bRe1NWI6Gw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 4、 new在内存分配上面有一些局限性，new的机制是将内存分配和对象构造组合在一起，同样的，delete也是将对象析构和内存释放组合在一起的。allocator将这两部分分开进行，allocator申请一部分内存，不进行初始化对象，只有当需要的时候才进行初始化操作。 
 
-- 子类拥有父类的所有属性和方法，子类可以拥有父类没有的属性和方法，子类对象可以当做父类对象使用； — [Updated on 2023-04-05 16:18:03](https://hyp.is/YubbdNOKEe2x7t9_6dxo8w/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- new[]先调用operator new[]分配内存，然后在p的前四个字节写入数组大小n，然后调用n次构造函数，针对复杂类型，new[]会额外存储数组大小；
 
-- 浅复制 ：只是拷贝了基本类型的数据，而引用类型数据，复制后也是会发生引用，我们把这种拷贝叫做“（浅复制）浅拷贝”，换句话说，浅复制仅仅是指向被复制的内存地址，如果原地址中对象被改变了，那么浅复制出来的对象也会相应改变。 深复制 ：在计算机中开辟了一块新的内存地址用于存放复制的对象。 在某些状况下，类内成员变量需要动态开辟堆内存，如果实行位拷贝，也就是把对象里的值完全复制给另一个对象，如A=B。这时，如果B中有一个成员变量指针已经申请了内存，那A中的那个成员变量也指向同一块内存。这就出现了问题：当B把内存释放了（如：析构），这时A内的指针就是野指针了，出现运行错误。 — [Updated on 2023-04-05 16:27:04](https://hyp.is/pQipvtOLEe2vzJeV-RhHTQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- new表达式调用一个名为operator new(operator new[])函数，分配一块足够大的、原始的、未命名的内存空间； 编译器运行相应的构造函数以构造这些对象，并为其传入初始值； 对象被分配了空间并构造完成，返回一个指向该对象的指针。 
 
-- 3、 new操作符内存分配成功时，返回的是对象类型的指针，类型严格与对象匹配，无须进行类型转换，故new是符合类型安全性的操作符。而malloc内存分配成功则是返回void * ，需要通过强制类型转换将void*指针转换成我们需要的类型。 — [Updated on 2023-04-05 16:27:43](https://hyp.is/vLUr3NOLEe2HrM_0mQSJWQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- delete简单数据类型默认只是调用free函数；复杂数据类型先调用析构函数再调用operator delete；针对简单类型，delete和delete[]等同。假设指针p指向new[]分配的内存。因为要4字节存储数组大小，实际分配的内存地址为[p-4]，系统记录的也是这个地址。delete[]实际释放的就是p-4指向的内存。而delete会直接释放p指向的内存，这个内存根本没有被系统记录，所以会崩溃。 
 
-- 1、 new/delete是C++关键字，需要编译器支持。malloc/free是库函数，需要头文件支持； 2、 使用new操作符申请内存分配时无须指定内存块的大小，编译器会根据类型信息自行计算。而malloc则需要显式地指出所需内存的尺寸。 — [Updated on 2023-04-05 16:27:47](https://hyp.is/vqu26tOLEe2wArOzsGjxpw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 需要在 new [] 一个对象数组时，需要保存数组的维度，C++ 的做法是在分配数组空间时多分配了 4 个字节的大小，专门保存数组的大小，在 delete [] 时就可以取出这个保存的数，就知道了需要调用析构函数多少次了。 
 
-- 4、 new内存分配失败时，会抛出bac_alloc异常。malloc分配内存失败时返回NULL。 5、 new会先调用operator new函数，申请足够的内存（通常底层使用malloc实现）。然后调用类型的构造函数，初始化成员变量，最后返回自定义类型指针。delete先调用析构函数，然后调用operator delete函数释放内存（通常底层使用free实现）。malloc/free是库函数，只能动态的申请和释放内存，无法强制要求其做自定义类型对象构造和析构工作。 — [Updated on 2023-04-05 16:30:55](https://hyp.is/Lvtt-tOMEe2Sup-D7S1sYg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 55、malloc申请的存储空间能用delete释放吗? 不能，malloc /free主要为了兼容C，new和delete 完全可以取代malloc /free的。 malloc /free的操作对象都是必须明确大小的，而且不能用在动态类上。 new 和delete会自动进行类型检查和大小，malloc/free不能执行构造函数与析构函数，所以动态对象它是不行的。 当然从理论上说使用malloc申请的内存是可以通过delete释放的。不过一般不这样写的。而且也不能保证每个C++的运行时都能正常。 
 
-- 动态数组管理new一个数组时，[]中必须是一个整数，但是不一定是常量整数，普通数组必须是一个常量整数； — [Updated on 2023-04-05 16:31:11](https://hyp.is/OIWG7tOMEe2NNA9-E5yxBA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+## 56、malloc与free的实现原理？ 
+1、 在标准C库中，提供了malloc/free函数分配释放内存，这两个函数底层是由brk、mmap、，munmap这些系统调用实现的;
 
-- new动态数组返回的并不是数组类型，而是一个元素类型的指针； — [Updated on 2023-04-05 16:31:25](https://hyp.is/QK6ovtOMEe2wA5dZRYPquw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+2、 brk是将数据段(.data)的最高地址指针_edata往高地址推,mmap是在进程的虚拟地址空间中（堆和栈中间，称为文件映射区域的地方）找一块空闲的虚拟内存。这两种方式分配的都是虚拟内存，没有分配物理内存。在第一次访问已分配的虚拟地址空间的时候，发生缺页中断，操作系统负责分配物理内存，然后建立虚拟内存和物理内存之间的映射关系；
 
-- 3、 delete[]时，数组中的元素按逆序的顺序进行销毁； — [Updated on 2023-04-05 16:32:03](https://hyp.is/V1NkLtOMEe2x89f7nJUt-A/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+3、 malloc小于128k的内存，使用brk分配内存，将_edata往高地址推；malloc大于128k的内存，使用mmap分配内存，在堆和栈之间找一块空闲内存分配；brk分配的内存需要等到高地址内存释放以后才能释放，而mmap分配的内存可以单独释放。当最高地址空间的空闲内存超过128K（可由M_TRIM_THRESHOLD选项调节）时，执行内存紧缩操作（trim）。在上一个步骤free的时候，发现最高地址空闲内存超过128K，于是内存紧缩。
 
-- 4、 new在内存分配上面有一些局限性，new的机制是将内存分配和对象构造组合在一起，同样的，delete也是将对象析构和内存释放组合在一起的。allocator将这两部分分开进行，allocator申请一部分内存，不进行初始化对象，只有当需要的时候才进行初始化操作。 # — [Updated on 2023-04-05 16:32:22](https://hyp.is/YuREXNOMEe2dD88ebNK3pQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+4、 malloc是从堆里面申请内存，也就是说函数返回的指针是指向堆里面的一块内存。操作系统中有一个记录空闲内存地址的链表。当操作系统收到程序的申请时，就会遍历该链表，然后就寻找第一个空间大于所申请空间的堆结点，然后就将该结点从空闲结点链表中删除，并将该结点的空间分配给程序。
 
-- new[]先调用operator new[]分配内存，然后在p的前四个字节写入数组大小n，然后调用n次构造函数，针对复杂类型，new[]会额外存储数组大小； — [Updated on 2023-04-05 16:35:20](https://hyp.is/zPvJtNOMEe2VdRea2b7JfA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
 
-- new表达式调用一个名为operator new(operator new[])函数，分配一块足够大的、原始的、未命名的内存空间； ② 编译器运行相应的构造函数以构造这些对象，并为其传入初始值； ③ 对象被分配了空间并构造完成，返回一个指向该对象的指针。 — [Updated on 2023-04-05 16:35:33](https://hyp.is/1M5i0tOMEe2NOLfhorVbRg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+## 类成员初始化方式？构造函数的执行顺序 ？
+- 赋值初始化，通过在函数体内进行赋值初始化
+- 列表初始化，在冒号后使用初始化列表进行初始化。 
 
-- delete简单数据类型默认只是调用free函数；复杂数据类型先调用析构函数再调用operator delete；针对简单类型，delete和delete[]等同。假设指针p指向new[]分配的内存。因为要4字节存储数组大小，实际分配的内存地址为[p-4]，系统记录的也是这个地址。delete[]实际释放的就是p-4指向的内存。而delete会直接释放p指向的内存，这个内存根本没有被系统记录，所以会崩溃。 — [Updated on 2023-04-05 16:37:05](https://hyp.is/C5BoLtONEe2uGZ-NpWaR0g/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 对于在函数体中初始化,是在所有的数据成员被分配内存空间后才进行的。
 
-- 需要在 new [] 一个对象数组时，需要保存数组的维度，C++ 的做法是在分配数组空间时多分配了 4 个字节的大小，专门保存数组的大小，在 delete [] 时就可以取出这个保存的数，就知道了需要调用析构函数多少次了。 — [Updated on 2023-04-05 16:37:14](https://hyp.is/EJ36ZtONEe2_dws2YFDlEg/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 列表初始化是给数据成员分配内存空间时就进行初始化,就是说分配一个数据成员只要冒号后有此数据成员的赋值表达式(此表达式必须是括号赋值表达式),那么分配了内存空间后在进入函数体之前给数据成员赋值，就是说初始化这个数据成员此时函数体还未执行。 
 
-- 55、malloc申请的存储空间能用delete释放吗? 不能，malloc /free主要为了兼容C，new和delete 完全可以取代malloc /free的。 malloc /free的操作对象都是必须明确大小的，而且不能用在动态类上。 new 和delete会自动进行类型检查和大小，malloc/free不能执行构造函数与析构函数，所以动态对象它是不行的。 当然从理论上说使用malloc申请的内存是可以通过delete释放的。不过一般不这样写的。而且也不能保证每个C++的运行时都能正常。 # — [Updated on 2023-04-05 16:37:59](https://hyp.is/K5vgWNONEe29JkcD5zYajQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+2.  一个派生类构造函数的执行顺序如下：
 
-- 56、malloc与free的实现原理？ — [Updated on 2023-04-05 16:39:42](https://hyp.is/aS4epNONEe2NYos_1412CA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 虚拟基类的构造函数（多个虚拟基类则按照继承的顺序执行构造函数）。
 
-- malloc申请的空间的值是随机初始化的，calloc申请的空间的值是初始化为0的； — [Updated on 2023-04-05 16:39:58](https://hyp.is/cpT6stONEe27nG8G-ZTqZw/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 基类的构造函数（多个普通基类也按照继承的顺序执行构造函数）。
 
-- 赋值初始化，通过在函数体内进行赋值初始化；列表初始化，在冒号后使用初始化列表进行初始化。 — [Updated on 2023-04-05 16:40:29](https://hyp.is/hT8U1tONEe25R-9gxCBdcQ/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 类类型的成员对象的构造函数（按照初始化顺序）
 
-- 对于在函数体中初始化,是在所有的数据成员被分配内存空间后才进行的。 列表初始化是给数据成员分配内存空间时就进行初始化,就是说分配一个数据成员只要冒号后有此数据成员的赋值表达式(此表达式必须是括号赋值表达式),那么分配了内存空间后在进入函数体之前给数据成员赋值，就是说初始化这个数据成员此时函数体还未执行。 — [Updated on 2023-04-05 16:40:41](https://hyp.is/jHDNlNONEe246Zur7UaXog/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+- 派生类自己的构造函数。
 
-- ③ 类类型的成员对象的构造函数（按照初始化顺序） — [Updated on 2023-04-05 16:41:27](https://hyp.is/p2YhxtONEe2v1ef5m2sN-Q/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
 
-- 必须使用成员初始化的四种情况 ① 当初始化一个引用成员时； ② 当初始化一个常量成员时； ③ 当调用一个基类的构造函数，而它拥有一组参数时； ④ 当调用一个成员类的构造函数，而它拥有一组参数时； — [Updated on 2023-04-05 16:41:54](https://hyp.is/t_1iftONEe2ozTNHDq87AA/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
 
-- string继承自basic_string,其实是对char*进行了封装，封装的string包含了char*数组，容量，长度等等属性。 string可以进行动态扩展，在每次扩展的时候另外申请一块原空间大小两倍的空间（2*n），然后将原字符串拷贝过去，并加上新增的内容。 — [Updated on 2023-04-05 16:42:06](https://hyp.is/vv_85NONEe27nYNTMOi92A/interviewguide.cn/notes/03-hunting_job/02-interview/01-01-03-basic.html) — Group: #Public
+## 有哪些情况必须用到成员列表初始化？
 
+**成员初始化列表的概念**
 
+在类的构造函数中，不在函数体内对成员变量赋值，而是在构造函数的花括号前面使用冒号和初始化列表赋值
 
+- 当初始化一个引用成员时；
+- 当初始化一个常量成员时；
+- 当调用一个基类的构造函数，而它拥有一组参数时；
+- 当调用一个成员类的构造函数，而它拥有一组参数时； 
 
 
+2. 成员初始化列表做了什么
+- 编译器会一一操作初始化列表，以适当的顺序在构造函数之内安插初始化操作，并且在任何显示用户代码之前；
+- list中的项目顺序是由类中的成员声明顺序决定的，不是由初始化列表的顺序决定的；
 
+**效率**
 
+用初始化列表会快一些的原因是，对于类型，它少了一次调用构造函数的过程，而在函数体中赋值则会多一次调用。而对于内置数据类型则没有差别
 
+```c++
+#include <iostream>
+using namespace std;
+class A
+{
+public:
+    A()
+    {
+        cout << "默认构造函数A()" << endl;
+    }
+    A(int a)
+    {
+        value = a;
+        cout << "A(int "<<value<<")" << endl;
+    }
+    A(const A& a)
+    {
+        value = a.value;
+        cout << "拷贝构造函数A(A& a):  "<<value << endl;
+    }
+    int value;
+};
 
+class B
+{
+public:
+    B() : a(1)
+    {
+        b = A(2);
+    }
+    A a;
+    A b;
+};
+int main()
+{
+    B b;
+}
+
+//输出结果：
+//A(int 1)
+//默认构造函数A()
+//A(int 2)
+```
+**如果有些成员是类**，那么在进入构造函数之前，会先调用一次默认构造函数，进入构造函数后所做的事其实是一次赋值操作(对象已存在)，所以**如果是在构造函数体内进行赋值的话，等于是一次默认构造加一次赋值，而初始化列表只做一次赋值操作。**
+
+
+
+## C++中新增了string，它与C语言中的 char *有什么区别吗？
+
+- string继承自basic_string,其实是对char*进行了封装，封装的string包含了char*数组，容量，长度等等属性。 string可以进行动态扩展，在每次扩展的时候另外申请一块原空间大小两倍的空间（2*n），然后将原字符串拷贝过去，并加上新增的内容。
+
+
+## 三大特性继承封装多态
+让某种类型对象获得另一个类型对象的属性和方法。 它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展 常见的继承有三种方式： 
+实现继承：指使用基类的属性和方法而无需额外编码的能力 
+接口继承：指仅使用属性和方法的名称、但是子类必须提供实现的能力 
+可视继承：指子窗体（类）使用基窗体（类）的外观和实现代码的能力（C++里好像不怎么用） 
+
+- 封装 数据和代码捆绑在一起，避免外界干扰和不确定性访问。 封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏，例如：将公共的数据或方法使用public修饰，而不希望被访问的数据或方法采用private修饰。
+
+- 多态 同一事物表现出不同事物的能力，即向不同对象发送同一消息，不同的对象在接收时会产生不同的行为**（重载实现编译时多态，虚函数实现运行时多态）**。 多态性是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。简单一句话：允许将子类类型的指针赋值给父类类型的指针
+
+- 实现多态有二种方式：覆盖（override），重载（overload）。 覆盖：是指子类重新定义父类的虚函数的做法。 重载：是指允许存在多个同名函数，而这些函数的参数表不同（或许参数个数不同，或许参数类型不同，或许两者都不同）。 
+
+- 用初始化列表会快一些的原因是，对于类型，它少了一次调用构造函数的过程，而在函数体中赋值则会多一次调用。
+
+
+## 什么是内存泄露，如何检测与避免
+
+### 内存泄露
+
+一般我们常说的内存泄漏是指**堆内存的泄漏**。堆内存是指程序从堆中分配的，大小任意的(内存块的大小可以在程序运行期决定)内存块，使用完后必须显式释放的内存。应用程序般使用malloc,、realloc、 new等函数从堆中分配到块内存，使用完后，程序必须负责相应的调用free或delete释放该内存块，否则，这块内存就不能被再次使用，我们就说这块内存泄漏了
+
+### 避免内存泄露的几种方式
+
+-   计数法：使用new或者malloc时，让该数+1，delete或free时，该数-1，程序执行完打印这个计数，如果不为0则表示存在内存泄露
+-   一定要将基类的析构函数声明为**虚函数**
+-   对象数组的释放一定要用**delete []**
+-   有new就有delete，有malloc就有free，保证它们一定成对出现
+
+### 检测工具
+
+-   Linux下可以使用**Valgrind工具**
+-   Windows下可以使用**CRT库**
+
+
+
+## 对象复用的了解，零拷贝的了解
+
+### 对象复用
+
+对象复用其本质是一种设计模式：Flyweight享元模式。
+
+通过将对象存储到“对象池”中实现对象的重复利用，这样可以避免多次创建重复对象的开销，节约系统资源。
+
+### 零拷贝
+
+零拷贝就是一种避免 CPU 将数据从一块存储拷贝到另外一块存储的技术。
+
+零拷贝技术可以减少数据拷贝和共享总线操作的次数。
+
+在C++中，vector的一个成员函数
+emplace_back()很好地体现了零拷贝技术，它跟push_back()函数一样可以将一个元素插入容器尾部，区别在于：
+**使用push_back()函数需要调用拷贝构造函数和转移构造函数
+而使用emplace_back()插入的元素原地构造，不需要触发拷贝构造和转移构造**，效率更高。
+
+**==网络数据发送中也有零拷贝概念==**
+(深度理解Linux网络 P118)
+正常状态：
+1、将数据从硬盘DMA到Page Cache
+2、从Page Cache 用CPU拷贝到用户内存
+3、用户内存使用CPU拷贝到Socket发送缓冲区
+4、从缓冲区拷贝到skb
+5、从skb使用DMA拷贝到网卡
+
+零拷贝：
+Page Cache的数据不拷贝到用户内存，而是直接给Socket发送缓冲区
+
+
+
+## C++的四种强制转换reinterpret_cast、const_cast、static_cast 、dynamic_cast
+
+### reinterpret_cast
+`std::shared_ptr<int> p4 = new int(1);`
+
+type-id 必须是一个指针、引用、算术类型、函数指针或者成员指针。它可以用于类型之间进行强制转换。
+
+
+### const_cast
+
+const_cast<type_id> (expression)
+
+该运算符用来修改类型的const或volatile属性。除了const 或volatile修饰之外， type_id和expression的类型是一样的。用法如下：
+
+-   ==常量指针被转化成非常量的指针==，并且仍然指向原来的对象
+    
+-   ==常量引用被转换成非常量的引用==，并且仍然指向原来的对象
+    
+-   const_cast一般用于修改底指针。如const char *p形式
+
+
+
+
+
+### static_cast
+
+`static_cast <type-id> (expression)`
+
+该运算符把expression转换为type-id类型，但没有运行时类型检查来保证转换的安全性。它主要有如下几种用法：
+
+-   用于类层次结构中基类（父类）和派生类（子类）之间指针或引用引用的转换
+    
+    -   进行==上行转换==（把派生类的指针或引用转换成基类表示）==是安全的==
+        
+    -   进行==下行转换==（把基类指针或引用转换成派生类表示）时，由于没有动态类型检查，所以==是不安全的==
+        
+-   用于==基本数据类型之间的转换==，如把int转换成char，把int转换成enum。这种转换的==安全性也要开发人员来保证==。
+    
+-   把==空指针转换成目标类型的空指针==
+    
+-   把==任何类型的表达式转换成void类型==
+    
+
+注意：static_cast不能转换掉expression的const、volatile、或者__unaligned属性。
+
+### dynamic_cat
+
+有类型检查，基类向派生类转换比较安全，但是派生类向基类转换则不太安全
+
+`dynamic_cast <type-id> (expression)`
+
+该运算符把expression转换成type-id类型的对象。type-id 必须是类的指针、类的引用或者void*
+
+如果 type-id 是类指针类型，那么expression也必须是一个指针，如果 type-id 是一个引用，那么 expression 也必须是一个引用
+
+dynamic_cast运算符可以在执行期决定真正的类型，也就是说expression必须是多态类型。如果下行转换是安全的（也就说，如果基类指针或者引用确实指向一个派生类对象）这个运算符会传回适当转型过的指针。如果 如果下行转换不安全，这个运算符会传回空指针（也就是说，基类指针或者引用没有指向一个派生类对象）
+
+dynamic_cast主要用于类层次间的上行转换和下行转换，还可以用于类之间的交叉转换
+
+在类层次间进行上行转换时，dynamic_cast和static_cast的效果是一样的
+
+==在进行下行转换时，dynamic_cast具有类型检查的功能，比static_cast更安全==
+
+
+
+
+## 静态类型和动态类型，静态绑定和动态绑定
+
+-   静态类型：对象在声明时采用的类型，在编译期既已确定；
+-   动态类型：通常是指一个指针或引用目前所指对象的类型，是在运行期决定的；
+-   静态绑定：绑定的是静态类型，所对应的函数或属性依赖于对象的静态类型，发生在编译期；
+-   动态绑定：绑定的是动态类型，所对应的函数或属性依赖于对象的动态类型，发生在运行期；
+
+**==非虚函数一般都是静态绑定，而虚函数都是动态绑定（如此才可实现多态性）==**
+
+
+绝对不要重新定义继承而来的非虚(non-virtual)函数,因为这样导致函数调用由对象声明时的静态类型确定了，而和对象本身脱离了关系，没有多态，也这将给程序留下不可预知的隐患和莫名其妙的BUG；另外，在动态绑定也即在virtual函数中，要注意默认参数的使用。当缺省参数和virtual函数一起使用的时候一定要谨慎，不然出了问题怕是很难排查。
+
+
+## 内存对齐
+
+为什么要内存对齐 平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。 性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问。 假如没有内存对齐机制，数据可以任意存放，现在一个int变量存放在从地址1开始的联系四个字节地址中，该处理器去取数据时，要先从0地址开始读取第一个4字节块,剔除不想要的字节（0地址）,然后从地址4开始读取下一个4字节块,同样剔除不要的数据（5，6，7地址）,最后留下的两块数据合并放入寄存器。这需要做很多工作。 现在有了内存对齐的，int类型数据只能存放在按照对齐规则的内存中，比如说0地址开始的内存。那么现在该处理器在取数据时一次性就能将数据读出来了，而且不需要做额外的操作，提高了效率。
+- 内存对齐规则 基本类型的对齐值就是其sizeof值; 数据成员对齐规则：结构(struct)(或联合(union))的数据成员，第一个数据成员放在offset为0的地方，以后每个数据成员的对齐按照#pragma pack指定的数值和这个数据成员自身长度中，比较小的那个进行; 结构(或联合)的整体对齐规则：在数据成员完成各自对齐之后，结构(或联合)本身也要进行对齐，对齐将按照#pragma pack指定的数值和结构(或联合)最大数据成员长度中，比较小的那个进行; 
+
+- 如果没有采用内存对齐: a占一个字节, b占4个字节.假如没有内存对齐这一说.当程序访问这一结构体变量时,变量位于物理内存中.那么假设a占据内存地址0,b则占据内存地址1~4.由于ram访问是每次读4bytes,那么我们想要访问b的时候,需要先读地址0~3,再读地址4~7,然后把地址1~3和地址4处的值拼出变量b的值放到寄存器里.这样在没有内存对齐的情况下,我们需要读两次内存,并且还需要进行相应的转换. 采用内存对齐: 那么如果我们采用内存对齐呢,编译的时候编译器给a分配0~3的地址,b分配4~7的地址,这样我们想要读b的值时,只需要读一次地址4~7就可以了.是不是节省了很多的cpu指令周期呀. 
+
+
+内存对齐最最底层的原因是内存的IO是以8个字节64bit为单位进行的。 对于64位数据宽度的内存，假如cpu也是64位的cpu（现在的计算机基本都是这样的），每次内存IO获取数据都是从同行同列的8个chip中各自读取一个字节拼起来的。从内存的0地址开始，0-7字节的数据可以一次IO读取出来，8-15字节的数据也可以一次读取出来。
+```c++
+#include<iostream>
+
+using namespace std;
+
+class MyClass1
+{
+public:
+	int m_A;
+	virtual void Print(void);
+	virtual void test(void);
+	
+protected:
+	int m_B;
+private:
+	int m_C;
+    int m_D;
+};
+
+class MyClass2
+{
+public:
+	int m_A;
+	void Print(void);
+protected:
+	int m_B;
+private:
+	int m_C;
+};
+
+
+class Son1 : public MyClass1
+{
+public:
+	void Print(void);
+
+};
+
+class Son2 : public MyClass2
+{
+public:
+	void Print(void);
+
+};
+
+void test1()
+{
+
+	cout << "sizeof MyClass1:" << sizeof(MyClass1) << endl;
+	cout << "sizeof Son1:" << sizeof(Son1) << endl;
+
+	cout << "sizeof MyClass2:" << sizeof(MyClass2) << endl;
+	cout << "sizeof Son2:" << sizeof(Son2) << endl;
+}
+int main()
+{
+	test1();
+	return 0;
+}
+```
+
+sizeof MyClass1:24
+sizeof Son1:24
+sizeof MyClass2:12
+sizeof Son2:12
+
+## 虚函数表
+https://mp.weixin.qq.com/s/xTj_FLz0P3uXi-hi8jN_zA
+只要有虚函数，无论多少个，都会增加8个字节的大小（64位电脑）
+```c++
+class A {  
+public:  
+    virtual void a() { cout << "A a()" << endl; }  
+    virtual void b() { cout << "A b()" << endl; }  
+    virtual void c() { cout << "A c()" << endl; }  
+    int x, y;  
+};
+```
+A类实例化的对象的虚函数指针都指向同一个虚函数表
+![[Pasted image 20230423152150.jpg]]
+
+
+B类为A类派生，重写A类的虚函数b()
+```c++
+class B :public A {  
+public:  
+    virtual void b() { cout << "B b()" << endl; }  
+};
+```
+![[Pasted image 20230423152604.jpg]]
+
+
+```c++
+A* a1 = new A;  
+A* a2 = new A;  
+A* a3 = new B;  
+B* b = new B;
+```
+
+![[Pasted image 20230423152448.jpg]]
+
+
+先定义个C
+```c++
+class C {  
+public:  
+    virtual void d() { cout << "C d()" << endl; }  
+    virtual void e() { cout << "C e()" << endl; }  
+    virtual void f() { cout << "C f()" << endl; }  
+};
+```
+![[Pasted image 20230423152738.jpg]]
+
+
+```c++
+A* a = new A;  
+C* c = new C;  
+*(u64*)a = *(u64*)c;  
+```
+
+![[Pasted image 20230423152818.jpg]]
+
+```c++
+a->a(); a->b(); a->c();
+#输出： C d() C e() C f()
+```
