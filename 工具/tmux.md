@@ -80,3 +80,4 @@ $ tmux rename-session -t 0 <new-name>
 > -   `Ctrl+b d`：分离当前会话。
 > -   `Ctrl+b s`：列出所有会话。
 > -   `Ctrl+b $`：重命名当前会话。
+> -   `Ctrl+b [`:   进入翻页模式。

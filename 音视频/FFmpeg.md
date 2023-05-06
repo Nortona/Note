@@ -113,7 +113,7 @@ ffprobe -show_farmes -select_streams v mv.mp4
 ```
 
 
-# 通用视频编解码器
+# 通用视频编解码器 （编码步骤）
 ## 第一步 - 图片分区
 第一步是**将帧**分成几个**分区**，**子分区**及其以外。
 ![[Pasted image 20230505144112.png]]
@@ -125,12 +125,16 @@ ffprobe -show_farmes -select_streams v mv.mp4
 还记得我们学过的**帧的分类**吗？！好的，你也可以**把这些概念应用到块**，因此我们可以有 I 切片，B 切片，I 宏块等等。
 
 
-## 第二步 - 预测
+## 第二步 - 预测（帧内预测   帧间预测）
 
 一旦我们有了分区，我们就可以在它们之上做出预测。对于帧间预测，我们需要**发送运动向量和残差**；至于帧内预测，我们需要**发送预测方向和残差**。
 
+帧内预测，对一帧视频进行编码，I帧。
 
-## 第三步 - 转换
+帧间预测，几帧视频进行编码，P帧、B帧。这部分有运动估计，优化的难点。
+
+
+## 第三步 - 转换（DTC   量化编码）
 
 在我们得到残差块（`预测分区-真实分区`）之后，我们可以用一种方式**变换**它，这样我们就知道**哪些像素我们应该丢弃**，还依然能保持**整体质量**。这个确切的行为有几种变换方式。
 1. 离散余弦变换（DCT）
@@ -162,6 +166,14 @@ ffprobe -show_farmes -select_streams v mv.mp4
 ![[Pasted image 20230505160440.png]]
 然后我们从丢弃的系数块重构图像（记住，这需要可逆），并与原始图像相比较。
 ![[Pasted image 20230505160451.png]]
+
+
+## 第四步 - 熵编码
+经常出现的短码表示，偶尔出现的长码表示。
+
+一般是cabac方式。
+
+原始值-预测值=差值，对差值编码。
 
 
 # FFmpeg转封装
@@ -243,3 +255,281 @@ ffmpeg -i input.mp4 -vn -acodec copy output.aac
 ```shell
 ffmpeg -re -i input.mp4 -c copy -f mpegts output.ts
 ```
+
+
+# 音视频转码
+
+## H.264编码
+编码参数
+![[Image00079.jpg]]
+![[Image00080.jpg]]
+
+### preset
+编码器预设参数设置preset: 
+- ultrafast
+- superfast
+- veryfast
+- faster
+- fast
+- medium
+- slow
+- veryslow
+- placebo
+
+
+```shell
+ffmpeg -i input.mp4 -vcodec libx264 -preset ultrafast -b:v 2000k output.mp4
+```
+```shell
+ffmpeg -i input.mp4 -vcodec libx264 -preset medium -b:v 2000k output.mp4
+```
+
+
+### profile + level
+#### profile:
+- baseline
+- extented
+- main
+- high
+- high10
+- high422
+- high444
+
+high10与high的区别主要在于支持9位10位采样深度
+high444与high422区别在于支持4:4:4色度格式
+![[Image00082.jpg]]
+
+
+#### level
+level设置则与标准的ISO-14496-Part10参考中的Annex A中描述的表格完全相同
+![[Image00083.jpg]]
+![[Image00084.jpg]]
+
+使用baseline profile编码的H.264视频不会包含B Slice，而使用main profile、high profile编码出来的视频，均可以包含B Slice
+
+使用FFmpeg编码生成baseline与high两种profile的视频：
+```shell
+ffmpeg -i input.mp4 -vcodec libx264 -profile:v baseline -level 3.1 -s 352x288 -an -y -t 10 output_baseline.ts 
+
+ffmpeg -i input.mp4 -vcodec libx264 -profile:v high -level 3.1 -s 352x288 -an -y -t 10 output_high.ts
+
+```
+
+使用ffprobe查看这两个文件中包含B帧的情况：
+```shell
+ffprobe -v quiet -show_frames -select_streams v output_baseline.ts |grep "pict_type=B"|wc -l 0 
+
+ffprobe -v quiet -show_frames -select_streams v output_high.ts |grep "pict_type=B"|wc -l 140
+```
+
+![[Pasted image 20230506212104.png]]
+
+当进行实时流媒体直播时，采用baseline编码相对main或high的profile会更可靠些；
+但适当地加入B帧能够有效地降低码率，所以应根据需要与具体的业务场景进行选择。
+
+### 控制场景切换关键帧插入参数sc_threshold
+GOP group of pictures
+
+GOP 指的就是两个I帧之间的间隔.
+
+FFmpeg中，通过命令行的-g参数设置以帧数间隔为GOP的长度，但是当遇到场景切换时，例如从一个画面突然变成另外一个画面时，会强行插入一个关键帧，这时GOP的间隔将会重新开始，这样的场景切换在点播视频文件中会频频遇到，如果将点播文件进行M3U8切片，或者将点播文件进行串流虚拟直播时，GOP的间隔也会出现相同的情况，为了避免这种情况的产生，可以通过使用sc_threshold参数进行设定以决定是否在场景切换时插入关键帧。
+
+```shell
+ffmpeg -i input.mp4 -c:v libx264 -g 50 -t 60 output.mp4
+
+ffmpeg -i input.mp4 -c:v libx264 -g 50 -sc_threshold 0 -t 60 -y output.mp4
+```
+
+
+### 设置x264内部参数x264opts
+
+控制I帧、P帧、B帧的顺序及出现频率，首先分析一下设置的GOP参数，如果视频GOP设置为50帧，那么如果在这50帧中不希望出现B帧，则客户只需要将x264参数bframes设置为0即可
+```shell
+ffmpeg -i input.mp4 -c:v libx264 -x264opts "bframes=0" -g 50 -sc_threshold 0 output.mp4
+```
+
+
+如果希望控制I帧、P帧、B帧的频率与规律，可以通过控制GOP中B帧的帧数来实现，P帧的频率可以通过x264的参数b-adapt进行设置。
+设置GOP中，每2个P帧之间存放3个B帧：
+```shell
+ffmpeg -i input.mp4 -c:v libx264 -x264opts "bframes=3:b-adapt=0" -g 50 -sc_threshold 0 output.mp4
+```
+
+视频中的==B帧越多，同等码率时的清晰度将会越高，但是B帧越多，编码与解码所带来的复杂度也就越高==，所以合理地使用B帧非常重要，尤其是在进行清晰度与码率衡量时。
+
+### CBR恒定码率设置参数nal-hrd
+编码能够设置VBR、CBR的编码模式，VBR为可变码率，CBR为恒定码率。尽管现在互联网上所看到的视频中VBR居多，但CBR依然存在
+
+FFmpeg是通过参数-b：v来指定视频的编码码率的，但是设定的码率是平均码率，并不能够很好地控制最大码率及最小码率的波动，如果需要控制最大码率和最小码率以控制码率的波动，则需要使用FFmpeg的三个参数-b：v、maxrate、minrate。
+```shell
+ffmpeg -i input.mp4 -c:v libx264 -x264opts "bframes=10:b-adapt=0"  -b:v 1000k -maxrate 1000k -minrate 1000k -bufsize 50k -nal-hrd cbr -g 50 -sc_threshold 0 output.ts
+```
+
+- 设置B帧的个数，并且是每两个P帧之间包含10个B帧
+
+- 设置视频码率为1000kbit/s
+
+- 设置最大码率为1000kbit/s
+
+- 设置最小码率为1000kbit/s
+
+- 设置编码的buffer大小为50KB
+
+- 设置H.264的编码HRD信号形式为CBR
+
+- 设置每50帧一个GOP
+
+- 设置场景切换不强行插入关键帧
+
+
+## FFmpeg硬编解码
+当使用FFmpeg进行软编码时，常见的基于CPU进行H.264或H.265编码其相对成本会比较高，CPU编码时的性能也很低，所以出于编码效率及成本考虑，很多时候都会考虑采用硬编码，常见的硬编码包含Nvidia GPU与Intel QSV两种
+
+### Nvidia GPU硬编解码
+#### 参数
+![[Image00091.jpg]]
+![[Image00092.jpg]]
+
+使用Nvidia GPU进行硬编解码
+```shell
+ffmpeg -hwaccel nvdec -hwaccel_device 0 -hwaccel_output_format cuda  -vcodec h264_cuvid -i mv.mp4 -vf scale_cuda=1920:1080 -vcodec h264_nvenc -acodec copy -f mp4 -y output_nvidia.mp4
+```
+
+```
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'mv.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf58.28.101
+  Duration: 00:03:51.34, start: 0.000000, bitrate: 1635 kb/s
+  Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(tv, bt709), 1920x1080 [SAR 1:1 DAR 16:9], 1502 kb/s, 24 fps, 24 tbr, 12288 tbn, 48 tbc (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+      vendor_id       : [0][0][0][0]
+  Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+      vendor_id       : [0][0][0][0]
+Stream mapping:
+  Stream #0:0 -> #0:0 (h264 (h264_cuvid) -> h264 (h264_nvenc))
+  Stream #0:1 -> #0:1 (copy)
+Press [q] to stop, [?] for help
+Output #0, mp4, to 'output_nvidia.mp4':
+  Metadata:
+    major_brand     : isom
+    minor_version   : 512
+    compatible_brands: isomiso2avc1mp41
+    encoder         : Lavf58.76.100
+  Stream #0:0(und): Video: h264 (Main) (avc1 / 0x31637661), cuda(tv, bt709, progressive), 1920x1080 [SAR 1:1 DAR 16:9], q=2-31, 2000 kb/s, 24 fps, 12288 tbn (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+      vendor_id       : [0][0][0][0]
+      encoder         : Lavc58.134.100 h264_nvenc
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/2000000 buffer size: 4000000 vbv_delay: N/A
+  Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 128 kb/s (default)
+    Metadata:
+      handler_name    : ISO Media file produced by Google Inc.
+      vendor_id       : [0][0][0][0]
+frame= 5551 fps=437 q=27.0 Lsize=   61613kB time=00:03:51.31 bitrate=2182.0kbits/s speed=18.2x    
+video:57844kB audio:3615kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.250493%
+
+```
+
+`Stream #0:0 -> #0:0 (h264 (h264_cuvid) -> h264 (h264_nvenc))`
+使用`h264_cuvid`硬解码与`h264_nvenc`硬编码
+
+可以极大提高速度
+
+### Intel QSV硬编码
+参数
+![[Image00094.jpg]]
+![[Image00095.jpg]]
+
+```shell
+ffmpeg -i 10M1080P.mp4 -pix_fmt nv12 -vcodec h264_qsv -an -y output.mp4
+```
+
+
+在使用Intel进行高清编码时，使用AVC编码之后观察码率会比较高，但是使用H.265（HEVC）则能更好地降低同样清晰度的码率，
+```shell
+ffmpeg -hide_banner -y -hwaccel qsv -i 10M1080P.mp4 -an -c:v hevc_qsv -load_plugin hevc_hw -b:v 5M -maxrate 5M out.mp4
+```
+
+### MP3的编码质量设置
+在FFmpeg中进行MP3编码采用的是第三方库libmp3lame，所以进行MP3编码时，需要设置编码参数acodec为libmp3lame，
+```shell
+ffmpeg –i INPUT –acodec libmp3lame OUTPUT.mp3
+```
+#### MP3基本信息
+![[Image00101.jpg]]
+
+```shell
+ffmpeg -i input.mp3 -acodec libmp3lame -q:a 8 output.mp3
+```
+执行完上面这条命令行之后，将生成的output.mp3的码率区间设置在70kbit/s至105kbit/s之间
+
+### AAC
+在音视频流中，无论直播与点播，AAC都是目前最常用的一种音频编码格式，例如RTMP直播、HLS直播、RTSP直播、FLV直播、FLV点播、MP4点播等文件中都是常见的AAC音视频。
+与MP3相比，AAC是一种编码效率更高、编码音质更好的音频编码格式，常见的使用AAC编码后的文件存储格式为m4a
+
+FFmpeg可以支持AAC的三种编码器具体如下。
+- aac：FFmpeg本身的AAC编码实现
+
+- libfaac：第三方的AAC编码器
+
+- libfdk_aac：第三方的AAC编码器
+
+#### acc
+```shell
+ffmpeg -i input.mp4 -c:a aac -b:a 160k output.aac
+```
+
+#### FDK AAC第三方的AAC编解码Codec库
+##### 恒定码率（CBR）模式
+如果使用libfdk_aac设定一个恒定的码率，改变编码后的大小，并且可以兼容HE-AAC Profile，则可以根据音频设置的经验设置码率，例如如果一个声道使用64kbit/s，那么双声道为128kbit/s，环绕立体声为384kbit/s，这种通常为5.1环绕立体声。可以通过b：a参数进行设置
+```shell
+ffmpeg -i input.wav -c:a libfdk_aac -b:a 128k output.m4a
+```
+根据这条命令行可以看出，FFmpeg使用libfdk_aac将input.wav转为恒定码率为128kbit/s、编码为AAC的output.m4a音频文件。
+
+```shell
+ffmpeg -i input.mp4 -c:v copy -c:a libfdk_aac -b:a 384k output.mp4
+```
+
+根据这条命令行可以看出，FFmpeg将input.mp4的视频文件按照原有的编码方式进行输出封装，将音频以libfdk_aac进行编码，音频通道为环绕立体声，码率为384kbit/s，封装格式为output.mp4。
+
+##### 动态码率（VBR）模式
+
+使用VBR可以有更好的音频质量，使用libfdk_aac进行VBR模式的AAC编码时，可以设置5个级别。
+
+第一列为VBR的类型，第二列为每通道编码后的码率，第三列中有三种AAC编码信息，具体如下。
+![[Image00102.jpg]]
+
+·LC：Low Complexity AAC，这种编码相对来说体积比较大，质量稍差
+
+·HE：High-Efficiency AAC，这种编码相对来说体积稍小，质量较好
+
+·HEv2：High-Efficiency AAC version2，这种编码相对来说体积小，质量优
+
+
+LC、HE、HEv2的推荐参数
+![[Image00103.jpg]]
+![[Image00104.jpg]]
+```shell
+ffmpeg -i input.wav -c:a libfdk_aac -vbr 3 output.m4a
+# FFmpeg会将input.wav的音频转为音频编码为libfdk_aac的output.m4a音频文件。
+```
+
+
+#### AAC音频质量对比
+
+AAC-LC的音频编码可以采用libfaac、libfdk_aac、FFmpeg内置AAC三种，其质量顺序排列如下。
+
+·libfdk_aac音频编码质量最优
+
+·FFmpeg内置AAC编码次于libfdk_aac但优于libfaac
+
+·libfaac在FFmpeg内置AAC编码为实验品时是除了libfdk_aac之外的唯一选择
+
