@@ -533,3 +533,76 @@ AAC-LC的音频编码可以采用libfaac、libfdk_aac、FFmpeg内置AAC三种，
 
 ·libfaac在FFmpeg内置AAC编码为实验品时是除了libfdk_aac之外的唯一选择
 
+
+# FFmpeg流媒体
+
+```shell
+ ffmpeg -video_size 1920x1080 -framerate 25 -f x11grab -i :0.0 out.mp4
+#  录屏
+```
+## RTMP
+FFmpeg拉取RTMP直播流可以使用的主要参数
+![[Image00106.jpg]]
+
+
+## RTSP流
+
+
+## http流
+
+
+## UDP/TCP流
+
+## 多路流
+
+## HDS
+
+## DASH
+
+# 采集设备
+## fbdev
+有时在向外界展示Linux的命令行操作又不希望别人看到你的桌面时，可以通过获得FrameBuffer设备图像数据进行编码然后推流或录制
+```shell
+ffmpeg -framerate 30 -f fbdev -i /dev/fb0 output.mp4
+```
+
+## v4l2
+Linux下，常见的视频设备还有video4linux，现在是video4linux2，设备一般缩写为v4l2，尤其是用于摄像头设备，下面查看一下v4l2设备的参数：
+```shell
+ffmpeg -h demuxer=v4l2
+```
+![[Image00164.jpg]]
+
+使用FFmpeg采集Linux下的v4l2设备时，主要用来采集摄像头，而摄像头通常支持多种像素格式，有些摄像头还支持直接输出已经编码好的H.264数据
+
+```shell
+ffmpeg -hide_banner -s 1920x1080 -i /dev/video0 output.avi
+```
+
+
+## x11grab
+![[Image00166.jpg]]
+
+### （1）桌面录制
+
+在有些Linux的教学或者演示时，需要用到Linux桌面的图像直播或者录制，参考本节前面介绍的设备名规则，可以使用如下命令对桌面进行录制：
+```shell
+ffmpeg -f x11grab -framerate 25 -video_size 1366x768 -i :0.0 out.mp4
+```
+
+### (2) 桌面录制指定起始位置
+前文我们录制的区域为整个桌面，有时候并不一定符合我们的要求，FFmpeg提供了录制某个区域的方法：
+```shell
+ffmpeg -f x11grab -framerate 25 -video_size 352x288 -i :0.0+300,200 out.mp4
+```
+
+### (3)桌面录制带鼠标记录的视频
+```shell
+ffmpeg -f x11grab -video_size 1366x768 -follow_mouse 1 -i :0.0 out.mp4
+```
+
+
+
+
+# API
+## libavformat
