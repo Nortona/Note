@@ -1,0 +1,228 @@
+{
+  "main": {
+    "id": "5bedb01137dfa7b3",
+    "type": "split",
+    "children": [
+      {
+        "id": "e24ec7ef6d90c50d",
+        "type": "tabs",
+        "dimension": 66.98564593301435,
+        "children": [
+          {
+            "id": "c1158e8c08d6e064",
+            "type": "leaf",
+            "state": {
+              "type": "memos_view",
+              "state": {}
+            }
+          },
+          {
+            "id": "a319da5667a75a9f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Diary/2023-05-09.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ],
+        "currentTab": 1
+      },
+      {
+        "id": "1dc877b372daa479",
+        "type": "tabs",
+        "dimension": 33.014354066985646,
+        "children": [
+          {
+            "id": "02a1de7264b86be7",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Diary/2023-05-09.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "70b112eb37ebb15a",
+    "type": "split",
+    "children": [
+      {
+        "id": "e3b08a213f6577b8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "940cdea9ca9daed8",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "d7c10e6532a707c7",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          },
+          {
+            "id": "d87e0826f4820b77",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6d4e2081bf729c2e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200
+  },
+  "right": {
+    "id": "a9163b561c7bd960",
+    "type": "split",
+    "children": [
+      {
+        "id": "18b73dc27c6a6b19",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "77c7066ac2140c8e",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "60199604b1c4a331",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Diary/2023-05-09.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "4b4fbe9fab037107",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Diary/2023-05-09.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ],
+        "currentTab": 2
+      }
+    ],
+    "direction": "horizontal",
+    "width": 200,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": true,
+      "command-palette:打开命令面板": false,
+      "obsidian-hypothesis-plugin:Sync your hypothesis highlights": false,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "workspaces:管理工作区布局": false,
+      "obsidian-memos:Memos": false
+    }
+  },
+  "active": "940cdea9ca9daed8",
+  "lastOpenFiles": [
+    "source/Pasted image 20230509170714.png",
+    "source/Pasted image 20230509170529.png",
+    "Diary/2023-05-09.md",
+    "计算机网络/计算机网络-阿秀.md",
+    "计算机网络/计算机网络笔记.md",
+    "source/Pasted image 20230509151241.png",
+    "C++语言/C++基础语法.md",
+    "source/Pasted image 20230509135320.png",
+    "source/Pasted image 20230509135142.png",
+    "C++语言/C++11新标准.md",
+    "C++语言/C++编译过程.md",
+    "C++语言/STL模板库.md",
+    "C++语言/(2条消息) C++ 封装_c++封装_MessiGo的博客-CSDN博客.md",
+    "C++语言/其余问题-01-20.md",
+    "项目/WebServer/概述.md",
+    "项目/WebServer/01线程同步机制封装类.md",
+    "实习信息/投递记录.md",
+    "README.md",
+    "实习信息/就业.md",
+    "().md",
+    "Diary/2023-05-08.md",
+    "面经/项目改进.md",
+    "面经/面试算法.md",
+    "项目/WebServer/02半同步半反应堆线程池.md",
+    "操作系统/彻底理解 IO多路复用.md",
+    "操作系统/操作系统-阿秀.md",
+    "操作系统/操作系统笔记.md",
+    "音视频/FFmpeg.md",
+    "source/Image00166.jpg",
+    "source/Image00164.jpg",
+    "工具/tmux.md",
+    "source/Image00106.jpg",
+    "source/Image00104.jpg",
+    "source/Image00103.jpg",
+    "source/Image00102.jpg",
+    "音视频/流媒体.md",
+    "未命名.canvas",
+    "i",
+    "工具",
+    "WebTemp",
+    "项目",
+    "项目/WebServer",
+    "Diary",
+    "数据库/Redis",
+    "CS常识",
+    "算法",
+    "设计模式"
+  ]
+}

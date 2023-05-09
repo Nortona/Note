@@ -1,0 +1,16 @@
+{
+  "readableLineLength": true,
+  "strictLineBreaks": false,
+  "showFrontmatter": false,
+  "showLineNumber": false,
+  "rightToLeft": false,
+  "vimMode": false,
+  "showInlineTitle": true,
+  "promptDelete": false,
+  "attachmentFolderPath": "/source",
+  "foldHeading": true,
+  "foldIndent": true,
+  "showIndentGuide": true,
+  "spellcheck": false,
+  "alwaysUpdateLinks": true
+}
