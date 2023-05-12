@@ -18,7 +18,6 @@ git remote origin main
 
 ```shell
 git pull origin main
-git merge main
 ```
 
 

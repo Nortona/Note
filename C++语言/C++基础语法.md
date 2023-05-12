@@ -154,6 +154,17 @@ T&& 是通用引用，因此这个函数几乎可以接收任何类型的参数�
 
 通过 remove_reference 去掉 T 的引用性质（并不会去掉 cv 限定符），然后给它加上 `&&`，形成 ReturnType 类型，由于右值引用类型的返回值是右值，因此结果是实参被无条件地转换为右值。
 
+
+## 应用场景
+unique_ptr(), 为独占指针，不允许左值拷贝构造与左值赋值构造，开放了右值拷贝构造与赋值
+当把一个unique_ptr作为参数进行传递时，需要转换为右值
+```cpp
+auto ptr = std::make_unique<Thread>(std::bind(&ThreadPool::threadFunc, this));
+threads_emplace_back(std::move(ptr));
+```
+
+
+
 # 完美转发
 ## std::forward
 
@@ -720,35 +731,6 @@ int main()
 string继承自basic_string,其实是对char* 进行了封装，封装的string包含了char* 数组，容量，长度等等属性。 string可以进行动态扩展，在每次扩展的时候另外申请一块原空间大小两倍的空间（2 * n），然后将原字符串拷贝过去，并加上新增的内容。
 
 
-# 三大特性继承封装多态
-## 继承
-
-让某种类型对象获得另一个类型对象的属性和方法。 它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展 常见的继承有三种方式： 
-实现继承：指使用基类的属性和方法而无需额外编码的能力 
-接口继承：指仅使用属性和方法的名称、但是子类必须提供实现的能力 
-可视继承：指子窗体（类）使用基窗体（类）的外观和实现代码的能力（C++里好像不怎么用） 
-
-## 封装 
-- 数据和代码捆绑在一起，避免外界干扰和不确定性访问。 封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏，例如：将公共的数据或方法使用public修饰，而不希望被访问的数据或方法采用private修饰。
-
-### 什么是this指针？ 
-- this是指向实例化对象的一个指针，里面存储的是对象的地址，通过this可以访问内部的非静态成员变量与方法。每个非静态成员函数都有一个this指针（包括构造函数与析构函数），this指向调用对象。
-### 何时使用this指针？ 
-在类的非静态成员函数中返回对象本身时，直接使用return * this。（常用于运算符重载、赋值构造函数、拷贝构造函数）函数的形参名与成员变量名相同时
-
-## 多态 
-
-- 同一事物表现出不同事物的能力，即向不同对象发送同一消息，不同的对象在接收时会产生不同的行为（重载实现编译时多态，虚函数实现运行时多态）**。 多态性是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。简单一句话：允许将子类类型的指针赋值给父类类型的指针
-
-- 实现多态有二种方式：覆盖（override），重载（overload）。 覆盖：是指子类重新定义父类的虚函数的做法。 重载：是指允许存在多个同名函数，而这些函数的参数表不同（或许参数个数不同，或许参数类型不同，或许两者都不同）。 
-
-- 用初始化列表会快一些的原因是，对于类型，它少了一次调用构造函数的过程，而在函数体中赋值则会多一次调用。
-
-查看内存中对象的内存模型和类型的虚表结构
-```cpp
-g++ -fdump-lang-class -c 继承中的对象模型.cpp
-```
-
 
 # 什么是内存泄露，如何检测与避免
 
@@ -952,6 +934,35 @@ sizeof MyClass1:24
 sizeof Son1:24
 sizeof MyClass2:12
 sizeof Son2:12
+
+# 三大特性继承封装多态
+## 继承
+
+让某种类型对象获得另一个类型对象的属性和方法。 它可以使用现有类的所有功能，并在无需重新编写原来的类的情况下对这些功能进行扩展 常见的继承有三种方式： 
+实现继承：指使用基类的属性和方法而无需额外编码的能力 
+接口继承：指仅使用属性和方法的名称、但是子类必须提供实现的能力 
+可视继承：指子窗体（类）使用基窗体（类）的外观和实现代码的能力（C++里好像不怎么用） 
+
+## 封装 
+- 数据和代码捆绑在一起，避免外界干扰和不确定性访问。 封装，也就是把客观事物封装成抽象的类，并且类可以把自己的数据和方法只让可信的类或者对象操作，对不可信的进行信息隐藏，例如：将公共的数据或方法使用public修饰，而不希望被访问的数据或方法采用private修饰。
+
+### 什么是this指针？ 
+- this是指向实例化对象的一个指针，里面存储的是对象的地址，通过this可以访问内部的非静态成员变量与方法。每个非静态成员函数都有一个this指针（包括构造函数与析构函数），this指向调用对象。
+### 何时使用this指针？ 
+在类的非静态成员函数中返回对象本身时，直接使用return * this。（常用于运算符重载、赋值构造函数、拷贝构造函数）函数的形参名与成员变量名相同时
+
+## 多态 
+
+- 同一事物表现出不同事物的能力，即向不同对象发送同一消息，不同的对象在接收时会产生不同的行为（重载实现编译时多态，虚函数实现运行时多态）**。 多态性是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。简单一句话：允许将子类类型的指针赋值给父类类型的指针
+
+- 实现多态有二种方式：覆盖（override），重载（overload）。 覆盖：是指子类重新定义父类的虚函数的做法。 重载：是指允许存在多个同名函数，而这些函数的参数表不同（或许参数个数不同，或许参数类型不同，或许两者都不同）。 
+
+- 用初始化列表会快一些的原因是，对于类型，它少了一次调用构造函数的过程，而在函数体中赋值则会多一次调用。
+
+查看内存中对象的内存模型和类型的虚表结构
+```cpp
+g++ -fdump-lang-class -c 继承中的对象模型.cpp
+```
 
 
 # 虚函数表
@@ -1278,4 +1289,110 @@ Panda::Panda(std::string name, bool onExhibit) :
 
 根据《effective C++》的条款09：绝不在构造和析构过程中调用虚函数可知，在构造函数中虽然可以调用虚函数，但是强烈建议不要这样做。因为基类的构造的过程中，虚函数不能算作是虚函数。若构造函数中调用虚函数，可能会导致不确定行为的发生. 虚函数对应一个vtable(虚函数表)，类中存储一个vptr指向这个vtable。如果构造函数是虚函数，就需要通过vtable调用，可是对象没有初始化就没有vptr，无法找到vtable，所以构造函数不能是虚函数。
 
+
+# cpp11线程创建方法
+## 1. 头文件
+```cpp
+#include <thread>
+```
+
+## 2. 三种方法
+
+通过创建std：：thread对象来创建新的进程
+```cpp
+std::thread thObj(<CALLBACK>);
+```
+### std::thread的构造函数中接受什么参数？
+可以给 std::thread 对象添加函数，这个回调函数将在这个新线程启动时执行。这些回调可以是：
+
+1.  函数指针
+2.  函数对象
+3.  Lambda 函数
+
+###  函数指针
+```cpp
+#include <thread>
+ 
+void thread_function()
+{
+    for(int i = 0; i < 10000; i++);
+        std::cout<<"thread function Executing"<<std::endl;
+}
+ 
+int main()  
+{
+    #新线程将在创建新对象后立即启动，
+    #并将并行地执行（当参数）传递给线程的回调函数。 
+    #此外，任何线程都可以通过调用某线程对象上的 join( ) 函数来等待此线程退出。
+    std::thread threadObj(thread_function);
+    for(int i = 0; i < 10000; i++);
+        std::cout<<"Display From MainThread"<<std::endl;
+    threadObj.join();
+    std::cout<<"Exit of Main function"<<std::endl;
+    return 0;
+}
+```
+
+### 函数对象
+```cpp
+#include <iostream>
+#include <thread>
+class DisplayThread
+{
+public:
+    void operator()()     
+    {
+        for(int i = 0; i < 10000; i++)
+            std::cout<<"Display Thread Executing"<<std::endl;
+    }
+};
+ 
+int main()  
+{
+    std::thread threadObj( (DisplayThread()) );
+    for(int i = 0; i < 10000; i++)
+        std::cout<<"Display From Main Thread "<<std::endl;
+    std::cout<<"Waiting For Thread to complete"<<std::endl;
+    threadObj.join();
+    std::cout<<"Exiting from Main Thread"<<std::endl;
+    return 0;
+}
+```
+
+**实例**：线程池与线程
+
+
+### Lambda函数
+```cpp
+#include <iostream>
+#include <thread>
+int main()  
+{
+    int x = 9;
+    std::thread threadObj([]{
+            for(int i = 0; i < 10000; i++)
+                std::cout<<"Display Thread Executing"<<std::endl;
+            });
+            
+    for(int i = 0; i < 10000; i++)
+        std::cout<<"Display From Main Thread"<<std::endl;
+        
+    threadObj.join();
+    std::cout<<"Exiting from Main Thread"<<std::endl;
+    return 0;
+}
+```
+
+## 如何区分线程
+
+每个 std::thread 对象都有一个 ID，使用下面的函数可以获取：
+
+```cpp
+std::thread::get_id()
+```
+获取当前线程的 ID：
+```cpp
+std::this_thread::get_id()
+```
+如果 std::thread 对象没有和任何对象关联，则 get_id() 函数会返回默认构造的 std::thread::id 对象，即“非线程”。
 
