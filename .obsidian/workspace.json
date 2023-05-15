@@ -6,7 +6,7 @@
       {
         "id": "1ed3c1a057605bde",
         "type": "tabs",
-        "dimension": 39.740820734341256,
+        "dimension": 72.12918660287082,
         "children": [
           {
             "id": "524a30a6d571756c",
@@ -35,46 +35,38 @@
               },
               "pinned": true
             }
-          }
-        ]
-      },
-      {
-        "id": "cf69c967fcb069d8",
-        "type": "tabs",
-        "dimension": 40.12958963282937,
-        "children": [
+          },
           {
-            "id": "48fc6a62a50ac066",
+            "id": "6a1a350b5dd64bbb",
             "type": "leaf",
-            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "面经/面经答案.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "b475959b4ff9938c",
+            "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
                 "file": "面经/奇安信面经答案.md",
                 "mode": "source",
                 "source": false
-              },
-              "pinned": true
-            }
-          },
-          {
-            "id": "08f34624ddf4523d",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "操作系统/彻底理解 IO多路复用.md",
-                "mode": "source",
-                "source": false
               }
             }
           }
-        ]
+        ],
+        "currentTab": 3
       },
       {
         "id": "1dc877b372daa479",
         "type": "tabs",
-        "dimension": 20.129589632829372,
+        "dimension": 27.87081339712919,
         "children": [
           {
             "id": "02a1de7264b86be7",
@@ -214,12 +206,13 @@
       "obsidian-memos:Memos": false
     }
   },
-  "active": "48fc6a62a50ac066",
+  "active": "b475959b4ff9938c",
   "lastOpenFiles": [
     "面经/奇安信面经学习.md",
+    "C++语言/C++基础语法.md",
+    "面经/面经答案.md",
     "面经/奇安信面经答案.md",
     "操作系统/彻底理解 IO多路复用.md",
-    "面经/面经答案.md",
     "source/18464438-a926d29280048bf4.webp",
     "操作系统/操作系统-阿秀.md",
     "操作系统/操作系统笔记.md",
@@ -229,7 +222,6 @@
     "计算机网络/计算机网络-阿秀.md",
     "计算机网络/计算机网络笔记.md",
     "source/Pasted image 20230513005218.png",
-    "C++语言/C++基础语法.md",
     "C++语言/C++11新标准.md",
     "source/Pasted image 20230512153853.png",
     "项目/thread.md",
