@@ -4,87 +4,40 @@
     "type": "split",
     "children": [
       {
-        "id": "1ed3c1a057605bde",
+        "id": "1dc877b372daa479",
         "type": "tabs",
-        "dimension": 39.740820734341256,
+        "dimension": 63.831867057673506,
         "children": [
           {
-            "id": "524a30a6d571756c",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/奇安信面经学习.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true
-            }
-          },
-          {
-            "id": "f88f4efb6eac6bb5",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/面经答案.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true
-            }
-          }
-        ]
-      },
-      {
-        "id": "cf69c967fcb069d8",
-        "type": "tabs",
-        "dimension": 40.12958963282937,
-        "children": [
-          {
-            "id": "48fc6a62a50ac066",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/奇安信面经答案.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true
-            }
-          },
-          {
-            "id": "08f34624ddf4523d",
+            "id": "2c48c65047fd48c4",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "操作系统/彻底理解 IO多路复用.md",
+                "file": "实习信息/投递记录.md",
                 "mode": "source",
                 "source": false
               }
-            }
+            },
+            "group": "ebe01892615d35db"
           }
         ]
       },
       {
-        "id": "1dc877b372daa479",
+        "id": "64733099338d37c3",
         "type": "tabs",
-        "dimension": 20.129589632829372,
+        "dimension": 36.16813294232649,
         "children": [
           {
-            "id": "02a1de7264b86be7",
+            "id": "271cfee81d614bf0",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
-                "file": "面经/奇安信面经答案.md"
+                "file": "实习信息/投递记录.md"
               }
-            }
+            },
+            "group": "ebe01892615d35db"
           }
         ]
       }
@@ -166,12 +119,12 @@
             }
           },
           {
-            "id": "7bae7b88af4737fb",
+            "id": "60199604b1c4a331",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "面经/奇安信面经答案.md",
+                "file": "实习信息/投递记录.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -183,18 +136,19 @@
             }
           },
           {
-            "id": "d930e654a7479001",
+            "id": "4b4fbe9fab037107",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "面经/奇安信面经答案.md",
+                "file": "实习信息/投递记录.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "horizontal",
@@ -204,54 +158,55 @@
   "left-ribbon": {
     "hiddenItems": {
       "switcher:打开快速切换": false,
-      "canvas:新建白板": true,
+      "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": true,
       "command-palette:打开命令面板": false,
-      "workspaces:管理工作区布局": false,
       "obsidian-hypothesis-plugin:Sync your hypothesis highlights": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": true,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
+      "workspaces:管理工作区布局": false,
       "obsidian-memos:Memos": false
     }
   },
-  "active": "48fc6a62a50ac066",
+  "active": "2c48c65047fd48c4",
   "lastOpenFiles": [
-    "面经/奇安信面经学习.md",
-    "面经/奇安信面经答案.md",
-    "操作系统/彻底理解 IO多路复用.md",
-    "面经/面经答案.md",
-    "source/18464438-a926d29280048bf4.webp",
-    "操作系统/操作系统-阿秀.md",
-    "操作系统/操作系统笔记.md",
-    "source/Pasted image 20230513011644.png",
-    "面经/面经学习.md",
-    "source/Pasted image 20230513005412.png",
-    "计算机网络/计算机网络-阿秀.md",
-    "计算机网络/计算机网络笔记.md",
-    "source/Pasted image 20230513005218.png",
+    "4913",
+    "实习信息/就业.md",
+    "实习信息/投递记录.md",
     "C++语言/C++基础语法.md",
+    "C++语言/C++编译过程.md",
     "C++语言/C++11新标准.md",
-    "source/Pasted image 20230512153853.png",
     "项目/thread.md",
-    "项目/WebServer/01线程同步机制封装类.md",
+    "数据库/MySQL/MySQL笔记.md",
+    "数据库/MySQL/MySQL(QA).md",
+    "数据库/MySQL/mysql.md",
+    "数据库/MySQL/为什么 MySQL 采用 B+ 树作为索引？.md",
     "项目/WebServer/02半同步半反应堆线程池.md",
+    "项目/WebServer/01线程同步机制封装类.md",
     "工具/git.md",
-    "工具/tmux.md",
-    "杂项/错误之处.md",
-    "杂项",
+    "面经/奇安信面经答案.md",
+    "面经/奇安信面经学习.md",
+    "source/Pasted image 20230513011644.png",
+    "source/Pasted image 20230513005412.png",
+    "source/Pasted image 20230513005218.png",
+    "source/Pasted image 20230512153853.png",
+    "source/18464438-a926d29280048bf4.webp",
     "source/Pasted image 20230510201732.png",
     "source/Pasted image 20230510162411.png",
     "source/Pasted image 20230510162251.png",
     "source/Pasted image 20230510161822.png",
     "source/Pasted image 20230510161543.png",
+    "操作系统/操作系统笔记.md",
+    "操作系统/彻底理解 IO多路复用.md",
+    "操作系统/操作系统-阿秀.md",
+    "杂项/错误之处.md",
+    "杂项",
+    "C++语言/其余问题-01-20.md",
+    "C++语言/(2条消息) C++ 封装_c++封装_MessiGo的博客-CSDN博客.md",
+    "Diary/2023-05-09.md",
+    "计算机网络/计算机网络-阿秀.md",
+    "计算机网络/计算机网络笔记.md",
     "C++语言/STL模板库.md",
-    "数据库/MySQL/MySQL(QA).md",
-    "数据库/MySQL/MySQL笔记.md",
-    "面经/美团一面.md",
-    "面经/面试算法.md",
-    "面经/项目改进.md",
-    "数据库/MySQL/mysql.md",
-    "数据库/MySQL/为什么 MySQL 采用 B+ 树作为索引？.md",
     "未命名.canvas",
     "i",
     "工具",
