@@ -6,7 +6,7 @@
       {
         "id": "1ed3c1a057605bde",
         "type": "tabs",
-        "dimension": 72.12918660287082,
+        "dimension": 76.07655502392345,
         "children": [
           {
             "id": "524a30a6d571756c",
@@ -42,31 +42,19 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "面经/面经答案.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          },
-          {
-            "id": "b475959b4ff9938c",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/奇安信面经答案.md",
+                "file": "实习信息/投递记录.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 2
       },
       {
         "id": "1dc877b372daa479",
         "type": "tabs",
-        "dimension": 27.87081339712919,
+        "dimension": 23.923444976076556,
         "children": [
           {
             "id": "02a1de7264b86be7",
@@ -74,7 +62,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "面经/奇安信面经答案.md"
+                "file": "实习信息/投递记录.md"
               }
             }
           }
@@ -163,7 +151,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "面经/奇安信面经答案.md",
+                "file": "实习信息/投递记录.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -180,7 +168,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "面经/奇安信面经答案.md",
+                "file": "实习信息/投递记录.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -206,11 +194,21 @@
       "obsidian-memos:Memos": false
     }
   },
-  "active": "b475959b4ff9938c",
+  "active": "6a1a350b5dd64bbb",
   "lastOpenFiles": [
-    "面经/奇安信面经学习.md",
-    "C++语言/C++基础语法.md",
+    "conflict-files-obsidian-git.md",
     "面经/面经答案.md",
+    "实习信息/投递记录.md",
+    "C++语言/Makefile.md",
+    "音视频/流媒体.md",
+    "面经/奇安信面经学习.md",
+    "C++语言/C++编译过程.md",
+    "C++语言/C++基础语法.md",
+    "实习信息/就业.md",
+    "面经/美团一面.md",
+    "().md",
+    "工具/git.md",
+    "实习信息",
     "面经/奇安信面经答案.md",
     "操作系统/彻底理解 IO多路复用.md",
     "source/18464438-a926d29280048bf4.webp",
@@ -227,7 +225,6 @@
     "项目/thread.md",
     "项目/WebServer/01线程同步机制封装类.md",
     "项目/WebServer/02半同步半反应堆线程池.md",
-    "工具/git.md",
     "工具/tmux.md",
     "杂项/错误之处.md",
     "杂项",
@@ -237,13 +234,6 @@
     "source/Pasted image 20230510161822.png",
     "source/Pasted image 20230510161543.png",
     "C++语言/STL模板库.md",
-    "数据库/MySQL/MySQL(QA).md",
-    "数据库/MySQL/MySQL笔记.md",
-    "面经/美团一面.md",
-    "面经/面试算法.md",
-    "面经/项目改进.md",
-    "数据库/MySQL/mysql.md",
-    "数据库/MySQL/为什么 MySQL 采用 B+ 树作为索引？.md",
     "未命名.canvas",
     "i",
     "工具",
@@ -252,7 +242,6 @@
     "项目/WebServer",
     "Diary",
     "数据库/Redis",
-    "CS常识",
-    "算法"
+    "CS常识"
   ]
 }
