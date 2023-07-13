@@ -6,22 +6,8 @@
       {
         "id": "1ed3c1a057605bde",
         "type": "tabs",
-        "dimension": 76.07655502392345,
+        "dimension": 75.61919504643963,
         "children": [
-          {
-            "id": "524a30a6d571756c",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/奇安信面经学习.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true
-            }
-          },
           {
             "id": "f88f4efb6eac6bb5",
             "type": "leaf",
@@ -37,12 +23,24 @@
             }
           },
           {
-            "id": "6a1a350b5dd64bbb",
+            "id": "bc9cd14afcc1a189",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "实习信息/投递记录.md",
+                "file": "科研/DDPM.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          },
+          {
+            "id": "c87fdb3dfb19964e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "杂项/年度总结.md",
                 "mode": "source",
                 "source": false
               }
@@ -54,7 +52,7 @@
       {
         "id": "1dc877b372daa479",
         "type": "tabs",
-        "dimension": 23.923444976076556,
+        "dimension": 24.38080495356037,
         "children": [
           {
             "id": "02a1de7264b86be7",
@@ -62,7 +60,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "实习信息/投递记录.md"
+                "file": "杂项/年度总结.md"
               }
             }
           }
@@ -151,7 +149,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "实习信息/投递记录.md",
+                "file": "杂项/年度总结.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -168,7 +166,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "实习信息/投递记录.md",
+                "file": "杂项/年度总结.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -194,54 +192,54 @@
       "obsidian-memos:Memos": false
     }
   },
-  "active": "6a1a350b5dd64bbb",
+  "active": "c87fdb3dfb19964e",
   "lastOpenFiles": [
-    "conflict-files-obsidian-git.md",
-    "面经/面经答案.md",
-    "实习信息/投递记录.md",
-    "C++语言/Makefile.md",
-    "音视频/流媒体.md",
-    "面经/奇安信面经学习.md",
-    "C++语言/C++编译过程.md",
-    "C++语言/C++基础语法.md",
-    "实习信息/就业.md",
-    "面经/美团一面.md",
-    "().md",
-    "工具/git.md",
-    "实习信息",
-    "面经/奇安信面经答案.md",
-    "操作系统/彻底理解 IO多路复用.md",
-    "source/18464438-a926d29280048bf4.webp",
-    "操作系统/操作系统-阿秀.md",
-    "操作系统/操作系统笔记.md",
-    "source/Pasted image 20230513011644.png",
-    "面经/面经学习.md",
-    "source/Pasted image 20230513005412.png",
-    "计算机网络/计算机网络-阿秀.md",
-    "计算机网络/计算机网络笔记.md",
-    "source/Pasted image 20230513005218.png",
-    "C++语言/C++11新标准.md",
-    "source/Pasted image 20230512153853.png",
-    "项目/thread.md",
-    "项目/WebServer/01线程同步机制封装类.md",
-    "项目/WebServer/02半同步半反应堆线程池.md",
-    "工具/tmux.md",
+    "科研/DDPM.md",
+    "杂项/年度总结.md",
+    "项目/QT音视频播放器.md",
     "杂项/错误之处.md",
+    "音视频/音视频基础知识.md",
+    "音视频/流媒体.md",
+    "音视频/FFmpeg.md",
+    "C++语言/QT.md",
+    "工具/Linux命令.md",
+    "工具/tmux.md",
+    "source/Pasted image 20230701170626.png",
+    "source/Pasted image 20230701170327.png",
+    "source/Pasted image 20230701165949.png",
+    "source/Pasted image 20230630164640.jpg",
+    "source/Pasted image 20230630164601.png",
+    "source/Pasted image 20230630164417.png",
+    "source/Pasted image 20230628201219.png",
+    "source/Pasted image 20230628200818.png",
+    "source/497279-20210426110953281-1335685401.gif",
+    "source/497279-20210426104312115-357762309.gif",
+    "音视频/音频.md",
+    "面经/面经答案.md",
+    "科研/PINN.md",
+    "面经/奇安信面经答案.md",
+    "CS常识/编码.md",
+    "实习信息/投递记录.md",
+    "工具/git.md",
+    "嵌入式/基本概况.md",
+    "项目/thread.md",
+    "操作系统/操作系统-阿秀.md",
+    "科研",
+    "C++语言/C++基础语法.md",
+    "C++语言/C++11新标准.md",
+    "嵌入式",
+    "面经/奇安信面经学习.md",
+    "面经/面试算法.md",
+    "面经/面经学习.md",
+    "conflict-files-obsidian-git.md",
+    "实习信息",
     "杂项",
-    "source/Pasted image 20230510201732.png",
-    "source/Pasted image 20230510162411.png",
-    "source/Pasted image 20230510162251.png",
-    "source/Pasted image 20230510161822.png",
-    "source/Pasted image 20230510161543.png",
-    "C++语言/STL模板库.md",
     "未命名.canvas",
     "i",
     "工具",
     "WebTemp",
     "项目",
     "项目/WebServer",
-    "Diary",
-    "数据库/Redis",
-    "CS常识"
+    "Diary"
   ]
 }

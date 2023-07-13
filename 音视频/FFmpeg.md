@@ -534,6 +534,7 @@ AAC-LC的音频编码可以采用libfaac、libfdk_aac、FFmpeg内置AAC三种，
 ·libfaac在FFmpeg内置AAC编码为实验品时是除了libfdk_aac之外的唯一选择
 
 
+
 # FFmpeg流媒体
 
 ```shell
@@ -601,8 +602,309 @@ ffmpeg -f x11grab -framerate 25 -video_size 352x288 -i :0.0+300,200 out.mp4
 ffmpeg -f x11grab -video_size 1366x768 -follow_mouse 1 -i :0.0 out.mp4
 ```
 
-
-
-
 # API
 ## libavformat
+
+
+## AVPacket 和 AVFrame 结构含义
+[CSDN](https://blog.csdn.net/u011686167/article/details/121551041)
+FFmpeg有两个存储帧数据的结构体，其中AVPacket是解封装后保存压缩数据包，AVFrame是解码后保存音视频帧。
+
+### AVPacket
+用于存储压缩的数据，分别包括有音频压缩数据，视频压缩数据和字幕压缩数据。它通常在解复用操作后存储压缩数据，然后作为输入传给解码器。或者由编码器输出然后传递给复用器。对于视频压缩数据，一个AVPacket通常包括一个视频帧。对于音频压缩数据，可能包括几个压缩的音频帧。
+```C++
+typedef struct AVPacket {
+    AVBufferRef *buf;
+    // 显示时间戳，单位为AVStream->time_base
+    int64_t pts;
+    // 解码时间戳，单位为AVStream->time_base
+    int64_t dts;
+    // 音视频数据
+    uint8_t *data;
+    // 数据包大小
+    int   size;
+    // 码流索引下标
+    int   stream_index;
+    // 帧类型
+    int   flags;
+    // 额外数据
+    AVPacketSideData *side_data;
+    int side_data_elems;
+    // 帧显示时长，单位为AVStream->time_base
+    int64_t duration;
+    // 数据包所在码流的position
+    int64_t pos;
+} AVPacket;****
+```
+
+### AVFrame
+用于存储解码后的音频或者视频数据。AVFrame必须通过av_frame_alloc进行分配，通过av_frame_free释放。
+```C++
+typedef struct AVFrame {
+#define AV_NUM_DATA_POINTERS 8
+ 
+    // pointer to the picture/channel planes.
+    uint8_t *data[AV_NUM_DATA_POINTERS];
+ 
+    /**
+     * For video, size in bytes of each picture line.
+     * For audio, size in bytes of each plane.
+
+     * For audio, only linesize[0] may be set. For planar audio, each channel
+     * plane must be the same size.
+     *
+     * For video the linesizes should be multiples of the CPUs alignment
+     * preference, this is 16 or 32 for modern desktop CPUs.
+     * Some code requires such alignment other code can be slower without
+     * correct alignment, for yet other it makes no difference.
+     */
+    int linesize[AV_NUM_DATA_POINTERS];
+ 
+    /**
+     * pointers to the data planes/channels.
+     *
+     * For video, this should simply point to data[].
+     *
+     * For planar audio, each channel has a separate data pointer, and
+     * linesize[0] contains the size of each channel buffer.
+     * For packed audio, there is just one data pointer, and linesize[0]
+     * contains the total size of the buffer for all channels.
+     */
+    uint8_t **extended_data;
+ 
+    /**
+     * @name Video dimensions
+     */
+    int width, height;
+ 
+    /**
+     * number of audio samples (per channel) described by this frame
+     */
+    int nb_samples;
+ 
+    /**
+     * format of the frame, -1 if unknown or unset
+     * Values correspond to enum AVPixelFormat for video frames,
+     * enum AVSampleFormat for audio)
+     */
+    int format;
+ 
+    /**
+     * 1 -> keyframe, 0-> not
+     */
+    int key_frame;
+ 
+    /**
+     * Picture type of the frame.
+     */
+    enum AVPictureType pict_type;
+ 
+    /**
+     * Sample aspect ratio for the video frame, 0/1 if unknown/unspecified.
+     */
+    AVRational sample_aspect_ratio;
+ 
+    /**
+     * Presentation timestamp in time_base units.
+     */
+    int64_t pts;
+ 
+    /**
+     * DTS copied from the AVPacket that triggered returning this frame.
+     * This is also the Presentation time of this AVFrame calculated from
+     * only AVPacket.dts values without pts values.
+     */
+    int64_t pkt_dts;
+ 
+    /**
+     * picture number in bitstream order
+     */
+    int coded_picture_number;
+    /**
+     * picture number in display order
+     */
+    int display_picture_number;
+ 
+    /**
+     * quality (between 1 (good) and FF_LAMBDA_MAX (bad))
+     */
+    int quality;
+ 
+    /**
+     * for some private data of the user
+     */
+    void *opaque;
+ 
+    /**
+     * When decoding, this signals how much the picture must be delayed.
+     * extra_delay = repeat_pict / (2*fps)
+     */
+    int repeat_pict;
+ 
+    /**
+     * The content of the picture is interlaced.
+     */
+    int interlaced_frame;
+ 
+    /**
+     * If the content is interlaced, is top field displayed first.
+     */
+    int top_field_first;
+ 
+    /**
+     * Tell user application that palette has changed from previous frame.
+     */
+    int palette_has_changed;
+ 
+    /**
+     * reordered opaque 64 bits.
+     */
+    int64_t reordered_opaque;
+ 
+    /**
+     * Sample rate of the audio data.
+     */
+    int sample_rate;
+ 
+    /**
+     * Channel layout of the audio data.
+     */
+    uint64_t channel_layout;
+ 
+    /**
+     * AVBuffer references backing the data for this frame. 
+	 * If all elements of this array are NULL, 
+     * then this frame is not reference counted.
+     */
+    AVBufferRef *buf[AV_NUM_DATA_POINTERS];
+ 
+    /**
+     * For planar audio which requires more than AV_NUM_DATA_POINTERS
+     * AVBufferRef pointers, this array will hold all the references which
+     * cannot fit into AVFrame.buf.
+     */
+    AVBufferRef **extended_buf;
+    /**
+     * Number of elements in extended_buf.
+     */
+    int        nb_extended_buf;
+ 
+    AVFrameSideData **side_data;
+    int            nb_side_data;
+ 
+/**
+ * The frame data may be corrupted, e.g. due to decoding errors.
+ */
+#define AV_FRAME_FLAG_CORRUPT       (1 << 0)
+/**
+ * A flag to mark the frames which need to be decoded.
+ */
+#define AV_FRAME_FLAG_DISCARD   (1 << 2)
+ 
+    /**
+     * Frame flags, a combination of @ref lavu_frame_flags
+     */
+    int flags;
+ 
+    /**
+     * MPEG vs JPEG YUV range.
+     * - encoding: Set by user
+     * - decoding: Set by libavcodec
+     */
+    enum AVColorRange color_range;
+ 
+    enum AVColorPrimaries color_primaries;
+ 
+    enum AVColorTransferCharacteristic color_trc;
+ 
+    /**
+     * YUV colorspace type.
+     * - encoding: Set by user
+     * - decoding: Set by libavcodec
+     */
+    enum AVColorSpace colorspace;
+ 
+    enum AVChromaLocation chroma_location;
+ 
+    /**
+     * frame timestamp estimated using various heuristics, in stream time base
+     * - encoding: unused
+     * - decoding: set by libavcodec, read by user.
+     */
+    int64_t best_effort_timestamp;
+ 
+    /**
+     * reordered pos from the last AVPacket that has been input into the decoder
+     * - encoding: unused
+     * - decoding: Read by user.
+     */
+    int64_t pkt_pos;
+ 
+    /**
+     * duration of the corresponding packet, expressed in
+     * AVStream->time_base units, 0 if unknown.
+     * - encoding: unused
+     * - decoding: Read by user.
+     */
+    int64_t pkt_duration;
+ 
+    /**
+     * metadata.
+     * - encoding: Set by user.
+     * - decoding: Set by libavcodec.
+     */
+    AVDictionary *metadata;
+ 
+    /**
+     * decode error flags of the frame, set to a combination of
+     * FF_DECODE_ERROR_xxx flags if the decoder produced a frame,
+     * but there were errors during the decoding.
+     */
+    int decode_error_flags;
+#define FF_DECODE_ERROR_INVALID_BITSTREAM   1
+#define FF_DECODE_ERROR_MISSING_REFERENCE   2
+#define FF_DECODE_ERROR_CONCEALMENT_ACTIVE  4
+#define FF_DECODE_ERROR_DECODE_SLICES       8
+ 
+    // number of audio channels, only used for audio.
+    int channels;
+ 
+    // size of the corresponding packet containing the compressed frame.
+    int pkt_size;
+ 
+    /**
+     * For hwaccel-format frames, this should be a reference to the
+     * AVHWFramesContext describing the frame.
+     */
+    AVBufferRef *hw_frames_ctx;
+ 
+    /**
+     * AVBufferRef for free use by the API user. FFmpeg will never check the
+     * contents of the buffer ref. FFmpeg calls av_buffer_unref() on it when
+     * the frame is unreferenced. av_frame_copy_props() calls create a new
+     * reference with av_buffer_ref() for the target frame's opaque_ref field.
+     */
+    AVBufferRef *opaque_ref;
+ 
+    /**
+     * Video frames only. The number of pixels to discard from the the
+     * top/bottom/left/right border of the frame to obtain the sub-rectangle of
+     * the frame intended for presentation.
+     */
+    size_t crop_top;
+    size_t crop_bottom;
+    size_t crop_left;
+    size_t crop_right;
+ 
+    /**
+     * AVBufferRef for internal use by a single libav* library.
+     * Must not be used to transfer data between libraries.
+     */
+    AVBufferRef *private_ref;
+} AVFrame;
+```
+
+
+### 两者之间的关系
+av_read_frame得到压缩的数据包AVPacket，一般有三种压缩的数据包(视频、音频和字幕)，都用AVPacket表示。
+然后调用avcodec_send_packet 和 avcodec_receive_frame对AVPacket进行解码得到AVFrame。
