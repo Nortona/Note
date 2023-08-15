@@ -1,66 +1,21 @@
 {
   "main": {
-    "id": "5bedb01137dfa7b3",
+    "id": "b0a1bb8d613aa4c3",
     "type": "split",
     "children": [
       {
-        "id": "1ed3c1a057605bde",
+        "id": "5f73f7ee94b036e8",
         "type": "tabs",
-        "dimension": 75.61919504643963,
         "children": [
           {
-            "id": "f88f4efb6eac6bb5",
-            "type": "leaf",
-            "pinned": true,
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "面经/面经答案.md",
-                "mode": "source",
-                "source": false
-              },
-              "pinned": true
-            }
-          },
-          {
-            "id": "bc9cd14afcc1a189",
+            "id": "326cd800b5bf8dbf",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "科研/DDPM.md",
+                "file": "工具/git.md",
                 "mode": "source",
                 "source": false
-              }
-            }
-          },
-          {
-            "id": "c87fdb3dfb19964e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "杂项/年度总结.md",
-                "mode": "source",
-                "source": false
-              }
-            }
-          }
-        ],
-        "currentTab": 2
-      },
-      {
-        "id": "1dc877b372daa479",
-        "type": "tabs",
-        "dimension": 24.38080495356037,
-        "children": [
-          {
-            "id": "02a1de7264b86be7",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "杂项/年度总结.md"
               }
             }
           }
@@ -70,15 +25,15 @@
     "direction": "vertical"
   },
   "left": {
-    "id": "70b112eb37ebb15a",
+    "id": "46f8ce4ba05023b2",
     "type": "split",
     "children": [
       {
-        "id": "e3b08a213f6577b8",
+        "id": "45ece7358d1eda72",
         "type": "tabs",
         "children": [
           {
-            "id": "940cdea9ca9daed8",
+            "id": "14e4591c9a2f25ef",
             "type": "leaf",
             "state": {
               "type": "file-explorer",
@@ -88,15 +43,7 @@
             }
           },
           {
-            "id": "d7c10e6532a707c7",
-            "type": "leaf",
-            "state": {
-              "type": "starred",
-              "state": {}
-            }
-          },
-          {
-            "id": "d87e0826f4820b77",
+            "id": "63796ca8de5facf4",
             "type": "leaf",
             "state": {
               "type": "search",
@@ -111,7 +58,7 @@
             }
           },
           {
-            "id": "6d4e2081bf729c2e",
+            "id": "29432cec2ac66876",
             "type": "leaf",
             "state": {
               "type": "bookmarks",
@@ -122,35 +69,24 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 204.5
   },
   "right": {
-    "id": "a9163b561c7bd960",
+    "id": "5f25fa25cc2582cb",
     "type": "split",
     "children": [
       {
-        "id": "18b73dc27c6a6b19",
+        "id": "a9b2ba4359a93a66",
         "type": "tabs",
         "children": [
           {
-            "id": "77c7066ac2140c8e",
-            "type": "leaf",
-            "state": {
-              "type": "tag",
-              "state": {
-                "sortOrder": "frequency",
-                "useHierarchy": true
-              }
-            }
-          },
-          {
-            "id": "7bae7b88af4737fb",
+            "id": "a79b6754e7e75fc8",
             "type": "leaf",
             "state": {
               "type": "backlink",
               "state": {
-                "file": "杂项/年度总结.md",
-                "collapseAll": false,
+                "file": "工具/git.md",
+                "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
                 "showSearch": false,
@@ -161,85 +97,99 @@
             }
           },
           {
-            "id": "d930e654a7479001",
+            "id": "ffd6d7065394a935",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "杂项/年度总结.md",
+                "file": "工具/git.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
             }
+          },
+          {
+            "id": "fa0dcbfa815888c9",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "28c71121c503474a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "工具/git.md"
+              }
+            }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 481.5
   },
   "left-ribbon": {
     "hiddenItems": {
-      "switcher:打开快速切换": false,
-      "canvas:新建白板": true,
-      "daily-notes:打开/创建今天的日记": false,
-      "templates:插入模板": true,
-      "command-palette:打开命令面板": false,
       "workspaces:管理工作区布局": false,
+      "switcher:打开快速切换": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
       "obsidian-hypothesis-plugin:Sync your hypothesis highlights": false,
-      "table-editor-obsidian:Advanced Tables Toolbar": true,
+      "table-editor-obsidian:Advanced Tables Toolbar": false,
       "obsidian-memos:Memos": false
     }
   },
-  "active": "c87fdb3dfb19964e",
+  "active": "326cd800b5bf8dbf",
   "lastOpenFiles": [
-    "科研/DDPM.md",
-    "杂项/年度总结.md",
-    "项目/QT音视频播放器.md",
-    "杂项/错误之处.md",
+    "工具/Linux命令.md",
+    "工具/OPENAI secret key.md",
+    "工具/git.md",
+    "音视频/demuxer解复用.md",
+    "source/Pasted image 20230814213144.jpg",
+    "音视频/MP4文件.md",
+    "音视频/H.264.md",
+    "source/Pasted image 20230814162054.jpg",
+    "source/Pasted image 20230814162023.jpg",
+    "source/Pasted image 20230814162001.jpg",
+    "source/Pasted image 20230814161806.jpg",
+    "source/Pasted image 20230814161658.jpg",
+    "source/Pasted image 20230814161419.jpg",
     "音视频/音视频基础知识.md",
+    "source/Pasted image 20230814161021.jpg",
+    "source/Pasted image 20230813133806.jpg",
+    "source/Pasted image 20230813025252.png",
+    "项目/系统设计考虑.md",
+    "CS常识/系统设计.md",
+    "项目/QT音视频播放器.md",
     "音视频/流媒体.md",
     "音视频/FFmpeg.md",
-    "C++语言/QT.md",
-    "工具/Linux命令.md",
-    "工具/tmux.md",
-    "source/Pasted image 20230701170626.png",
-    "source/Pasted image 20230701170327.png",
-    "source/Pasted image 20230701165949.png",
-    "source/Pasted image 20230630164640.jpg",
-    "source/Pasted image 20230630164601.png",
-    "source/Pasted image 20230630164417.png",
-    "source/Pasted image 20230628201219.png",
-    "source/Pasted image 20230628200818.png",
-    "source/497279-20210426110953281-1335685401.gif",
-    "source/497279-20210426104312115-357762309.gif",
-    "音视频/音频.md",
-    "面经/面经答案.md",
-    "科研/PINN.md",
-    "面经/奇安信面经答案.md",
-    "CS常识/编码.md",
-    "实习信息/投递记录.md",
-    "工具/git.md",
-    "嵌入式/基本概况.md",
-    "项目/thread.md",
-    "操作系统/操作系统-阿秀.md",
-    "科研",
     "C++语言/C++基础语法.md",
+    "项目/WebServer/概述.md",
+    "项目/WebServer/01线程同步机制封装类.md",
     "C++语言/C++11新标准.md",
-    "嵌入式",
-    "面经/奇安信面经学习.md",
-    "面经/面试算法.md",
+    "面经/面经答案.md",
     "面经/面经学习.md",
-    "conflict-files-obsidian-git.md",
-    "实习信息",
-    "杂项",
-    "未命名.canvas",
-    "i",
-    "工具",
+    "面经/面试算法.md",
+    "C++语言/STL模板库.md",
+    "实习信息/投递记录.md",
+    "算法/排列、组合、子集.md",
+    "面经/美团一面.md",
+    "项目/WebServer/02半同步半反应堆线程池.md",
+    "面经/奇安信面经答案.md",
+    "面经/奇安信面经学习.md",
+    "source",
     "WebTemp",
-    "项目",
-    "项目/WebServer",
-    "Diary"
+    "Diary",
+    "新建 文本文档.txt"
   ]
 }
