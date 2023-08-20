@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "工具/git.md",
+                "file": "C++语言/C++编译过程.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "工具/git.md",
+                "file": "C++语言/C++编译过程.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "工具/git.md",
+                "file": "C++语言/C++编译过程.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,8 +125,16 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "工具/git.md"
+                "file": "C++语言/C++编译过程.md"
               }
+            }
+          },
+          {
+            "id": "239e74483ed09658",
+            "type": "leaf",
+            "state": {
+              "type": "git-history-view",
+              "state": {}
             }
           }
         ],
@@ -134,7 +142,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 481.5
+    "width": 399.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -151,10 +159,19 @@
   },
   "active": "326cd800b5bf8dbf",
   "lastOpenFiles": [
+    "CS常识/编码.md",
+    "C++语言/Makefile.md",
+    "C++语言/C++基础语法.md",
+    "C++语言/C++编译过程.md",
+    "CS常识/海康要求.md",
+    "音视频/demuxer解复用.md",
+    "source/Pasted image 20230817102938.png",
+    "source/Pasted image 20230816005358.png",
+    "source/Pasted image 20230816005346.png",
+    "source/Pasted image 20230816005142.png",
+    "工具/git.md",
     "工具/Linux命令.md",
     "工具/OPENAI secret key.md",
-    "工具/git.md",
-    "音视频/demuxer解复用.md",
     "source/Pasted image 20230814213144.jpg",
     "音视频/MP4文件.md",
     "音视频/H.264.md",
@@ -163,17 +180,12 @@
     "source/Pasted image 20230814162001.jpg",
     "source/Pasted image 20230814161806.jpg",
     "source/Pasted image 20230814161658.jpg",
-    "source/Pasted image 20230814161419.jpg",
     "音视频/音视频基础知识.md",
-    "source/Pasted image 20230814161021.jpg",
-    "source/Pasted image 20230813133806.jpg",
-    "source/Pasted image 20230813025252.png",
     "项目/系统设计考虑.md",
     "CS常识/系统设计.md",
     "项目/QT音视频播放器.md",
     "音视频/流媒体.md",
     "音视频/FFmpeg.md",
-    "C++语言/C++基础语法.md",
     "项目/WebServer/概述.md",
     "项目/WebServer/01线程同步机制封装类.md",
     "C++语言/C++11新标准.md",
@@ -183,10 +195,6 @@
     "C++语言/STL模板库.md",
     "实习信息/投递记录.md",
     "算法/排列、组合、子集.md",
-    "面经/美团一面.md",
-    "项目/WebServer/02半同步半反应堆线程池.md",
-    "面经/奇安信面经答案.md",
-    "面经/奇安信面经学习.md",
     "source",
     "WebTemp",
     "Diary",

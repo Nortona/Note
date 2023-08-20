@@ -61,6 +61,7 @@ s->probe_score = ret;
 
 用户如果已经设置了 `s->iformat`，就不会调 `av_probe_input_buffer2()` 来探测输入的数据，直接就返回了，相当于 `init_input()` 函数什么都没有做。
 
+
 `av_probe_input_buffer2()` 会遍历所有的 `Demuxer`，调他们的 `probe` 函数来分析输入的数据。
 
 #### 2、用户没有自己定义 AVIO
@@ -1328,10 +1329,323 @@ for(i = 0; i < sc->chunk_count; i++){
 
 ![[Pasted image 20230814213144.jpg]]
 
+第一个for循环
+![[Pasted image 20230816005142.png]]
+
+```c++
+for (i = 0; i < ic->nb_streams; i++) {
+	const AVCodec *codec;
+	AVDictionary *thread_opt = NULL;
+	st = ic->streams[i];
+	avctx = st->internal->avctx;
+
+	if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO ||
+		st->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE) {
+/*            if (!st->time_base.num)
+			st->time_base = */
+		if (!avctx->time_base.num)
+			avctx->time_base = st->time_base;
+	}
+
+	// only for the split stuff
+	if (!st->parser && !(ic->flags & AVFMT_FLAG_NOPARSE) && st->request_probe <= 0) {
+
+		st->parser = av_parser_init(st->codecpar->codec_id);
+
+	ret = avcodec_parameters_to_context(avctx, st->codecpar);
+	
+
+	codec = find_probe_decoder(ic, st, st->codecpar->codec_id);
 
 
 
+	/* Ensure that subtitle_header is properly set. */
+	if (st->codecpar->codec_type == AVMEDIA_TYPE_SUBTITLE
+		&& codec && !avctx->codec) {
+		if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
+			av_log(ic, AV_LOG_WARNING,
+				   "Failed to open codec in %s\n",__FUNCTION__);
+	}
+}
+```
+
+第二个for循环
+```c++
+for (i = 0; i < ic->nb_streams; i++) {
+#if FF_API_R_FRAME_RATE
+	ic->streams[i]->info->last_dts = AV_NOPTS_VALUE;
+#endif
+	ic->streams[i]->info->fps_first_dts = AV_NOPTS_VALUE;
+	ic->streams[i]->info->fps_last_dts  = AV_NOPTS_VALUE;
+}
+```
+
+第三个for循环
+![[Pasted image 20230816005358.png]]
+
+```c++
+for (;;) {
+	const AVPacket *pkt;
+	int analyzed_all_streams;
+	if (ff_check_interrupt(&ic->interrupt_callback)) {
+		ret = AVERROR_EXIT;
+		av_log(ic, AV_LOG_DEBUG, "interrupted\n");
+		break;
+	}
+
+	/* check if one codec still needs to be handled */
+	for (i = 0; i < ic->nb_streams; i++) {
+		int fps_analyze_framecount = 20;
+		int count;
+
+		st = ic->streams[i];
+		if (!has_codec_parameters(st, NULL))
+			break;
+		/* If the timebase is coarse (like the usual millisecond precision
+		 * of mkv), we need to analyze more frames to reliably arrive at
+		 * the correct fps. */
+		if (av_q2d(st->time_base) > 0.0005)
+			fps_analyze_framecount *= 2;
+		if (!tb_unreliable(st->internal->avctx))
+			fps_analyze_framecount = 0;
+		if (ic->fps_probe_size >= 0)
+			fps_analyze_framecount = ic->fps_probe_size;
+		if (st->disposition & AV_DISPOSITION_ATTACHED_PIC)
+			fps_analyze_framecount = 0;
+		/* variable fps and no guess at the real fps */
+		count = (ic->iformat->flags & AVFMT_NOTIMESTAMPS) ?
+				   st->info->codec_info_duration_fields/2 :
+				   st->info->duration_count;
+		if (!(st->r_frame_rate.num && st->avg_frame_rate.num) &&
+			st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+			if (count < fps_analyze_framecount)
+				break;
+		}
+		// Look at the first 3 frames if there is evidence of frame delay
+		// but the decoder delay is not set.
+		if (st->info->frame_delay_evidence && count < 2 && st->internal->avctx->has_b_frames == 0)
+			break;
+		if (!st->internal->avctx->extradata &&
+			(!st->internal->extract_extradata.inited ||
+			 st->internal->extract_extradata.bsf) &&
+			extract_extradata_check(st))
+			break;
+		if (st->first_dts == AV_NOPTS_VALUE &&
+			!(ic->iformat->flags & AVFMT_NOTIMESTAMPS) &&
+			st->codec_info_nb_frames < ((st->disposition & AV_DISPOSITION_ATTACHED_PIC) ? 1 : ic->max_ts_probe) &&
+			(st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO ||
+			 st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO))
+			break;
+	}
+	analyzed_all_streams = 0;
+	if (!missing_streams || !*missing_streams)
+		if (i == ic->nb_streams) {
+			analyzed_all_streams = 1;
+			/* NOTE: If the format has no header, then we need to read some
+			 * packets to get most of the streams, so we cannot stop here. */
+			if (!(ic->ctx_flags & AVFMTCTX_NOHEADER)) {
+				/* If we found the info for all the codecs, we can stop. */
+				ret = count;
+				av_log(ic, AV_LOG_DEBUG, "All info found\n");
+				flush_codecs = 0;
+				break;
+			}
+		}
+	/* We did not get all the codec info, but we read too much data. */
+	if (read_size >= probesize) {
+		ret = count;
+		av_log(ic, AV_LOG_DEBUG,
+			   "Probe buffer size limit of %"PRId64" bytes reached\n", probesize);
+		for (i = 0; i < ic->nb_streams; i++)
+			if (!ic->streams[i]->r_frame_rate.num &&
+				ic->streams[i]->info->duration_count <= 1 &&
+				ic->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
+				strcmp(ic->iformat->name, "image2"))
+				av_log(ic, AV_LOG_WARNING,
+					   "Stream #%d: not enough frames to estimate rate; "
+					   "consider increasing probesize\n", i);
+		break;
+	}
+	/* NOTE: A new stream can be added there if no header in file
+	 * (AVFMTCTX_NOHEADER). */
+	ret = read_frame_internal(ic, &pkt1);
+	if (ret == AVERROR(EAGAIN))
+		continue;
+
+	if (ret < 0) {
+		/* EOF or error*/
+		eof_reached = 1;
+		break;
+	}
+
+	if (!(ic->flags & AVFMT_FLAG_NOBUFFER)) {
+		ret = ff_packet_list_put(&ic->internal->packet_buffer,
+								 &ic->internal->packet_buffer_end,
+								 &pkt1, 0);
+		if (ret < 0)
+			goto unref_then_goto_end;
+
+		pkt = &ic->internal->packet_buffer_end->pkt;
+	} else {
+		pkt = &pkt1;
+	}
+
+	st = ic->streams[pkt->stream_index];
+	if (!(st->disposition & AV_DISPOSITION_ATTACHED_PIC))
+		read_size += pkt->size;
+
+	avctx = st->internal->avctx;
+	if (!st->internal->avctx_inited) {
+		ret = avcodec_parameters_to_context(avctx, st->codecpar);
+		if (ret < 0)
+			goto unref_then_goto_end;
+		st->internal->avctx_inited = 1;
+	}
+
+	if (pkt->dts != AV_NOPTS_VALUE && st->codec_info_nb_frames > 1) {
+		/* check for non-increasing dts */
+		if (st->info->fps_last_dts != AV_NOPTS_VALUE &&
+			st->info->fps_last_dts >= pkt->dts) {
+			av_log(ic, AV_LOG_DEBUG,
+				   "Non-increasing DTS in stream %d: packet %d with DTS "
+				   "%"PRId64", packet %d with DTS %"PRId64"\n",
+				   st->index, st->info->fps_last_dts_idx,
+				   st->info->fps_last_dts, st->codec_info_nb_frames,
+				   pkt->dts);
+			st->info->fps_first_dts =
+			st->info->fps_last_dts  = AV_NOPTS_VALUE;
+		}
+		/* Check for a discontinuity in dts. If the difference in dts
+		 * is more than 1000 times the average packet duration in the
+		 * sequence, we treat it as a discontinuity. */
+		if (st->info->fps_last_dts != AV_NOPTS_VALUE &&
+			st->info->fps_last_dts_idx > st->info->fps_first_dts_idx &&
+			(pkt->dts - (uint64_t)st->info->fps_last_dts) / 1000 >
+			(st->info->fps_last_dts     - (uint64_t)st->info->fps_first_dts) /
+			(st->info->fps_last_dts_idx - st->info->fps_first_dts_idx)) {
+			av_log(ic, AV_LOG_WARNING,
+				   "DTS discontinuity in stream %d: packet %d with DTS "
+				   "%"PRId64", packet %d with DTS %"PRId64"\n",
+				   st->index, st->info->fps_last_dts_idx,
+				   st->info->fps_last_dts, st->codec_info_nb_frames,
+				   pkt->dts);
+			st->info->fps_first_dts =
+			st->info->fps_last_dts  = AV_NOPTS_VALUE;
+		}
+
+		/* update stored dts values */
+		if (st->info->fps_first_dts == AV_NOPTS_VALUE) {
+			st->info->fps_first_dts     = pkt->dts;
+			st->info->fps_first_dts_idx = st->codec_info_nb_frames;
+		}
+		st->info->fps_last_dts     = pkt->dts;
+		st->info->fps_last_dts_idx = st->codec_info_nb_frames;
+	}
+	if (st->codec_info_nb_frames>1) {
+		int64_t t = 0;
+		int64_t limit;
+
+		if (st->time_base.den > 0)
+			t = av_rescale_q(st->info->codec_info_duration, st->time_base, AV_TIME_BASE_Q);
+		if (st->avg_frame_rate.num > 0)
+			t = FFMAX(t, av_rescale_q(st->codec_info_nb_frames, av_inv_q(st->avg_frame_rate), AV_TIME_BASE_Q));
+
+		if (   t == 0
+			&& st->codec_info_nb_frames>30
+			&& st->info->fps_first_dts != AV_NOPTS_VALUE
+			&& st->info->fps_last_dts  != AV_NOPTS_VALUE)
+			t = FFMAX(t, av_rescale_q(st->info->fps_last_dts - st->info->fps_first_dts, st->time_base, AV_TIME_BASE_Q));
+
+		if (analyzed_all_streams)                                limit = max_analyze_duration;
+		else if (avctx->codec_type == AVMEDIA_TYPE_SUBTITLE) limit = max_subtitle_analyze_duration;
+		else                                                     limit = max_stream_analyze_duration;
+
+		if (t >= limit) {
+			av_log(ic, AV_LOG_VERBOSE, "max_analyze_duration %"PRId64" reached at %"PRId64" microseconds st:%d\n",
+				   limit,
+				   t, pkt->stream_index);
+			if (ic->flags & AVFMT_FLAG_NOBUFFER)
+				av_packet_unref(&pkt1);
+			break;
+		}
+		if (pkt->duration) {
+			if (avctx->codec_type == AVMEDIA_TYPE_SUBTITLE && pkt->pts != AV_NOPTS_VALUE && st->start_time != AV_NOPTS_VALUE && pkt->pts >= st->start_time) {
+				st->info->codec_info_duration = FFMIN(pkt->pts - st->start_time, st->info->codec_info_duration + pkt->duration);
+			} else
+				st->info->codec_info_duration += pkt->duration;
+			st->info->codec_info_duration_fields += st->parser && st->need_parsing && avctx->ticks_per_frame ==2 ? st->parser->repeat_pict + 1 : 2;
+		}
+	}
+	if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
+#if FF_API_R_FRAME_RATE
+		ff_rfps_add_frame(ic, st, pkt->dts);
+#endif
+		if (pkt->dts != pkt->pts && pkt->dts != AV_NOPTS_VALUE && pkt->pts != AV_NOPTS_VALUE)
+			st->info->frame_delay_evidence = 1;
+	}
+	if (!st->internal->avctx->extradata) {
+		ret = extract_extradata(st, pkt);
+		if (ret < 0)
+			goto unref_then_goto_end;
+	}
+
+	/* If still no information, we try to open the codec and to
+	 * decompress the frame. We try to avoid that in most cases as
+	 * it takes longer and uses more memory. For MPEG-4, we need to
+	 * decompress for QuickTime.
+	 *
+	 * If AV_CODEC_CAP_CHANNEL_CONF is set this will force decoding of at
+	 * least one frame of codec data, this makes sure the codec initializes
+	 * the channel configuration and does not only trust the values from
+	 * the container. */
+	try_decode_frame(ic, st, pkt,
+					 (options && i < orig_nb_streams) ? &options[i] : NULL);
+
+	if (ic->flags & AVFMT_FLAG_NOBUFFER)
+		av_packet_unref(&pkt1);
+
+	st->codec_info_nb_frames++;
+	count++;
+    }
+```
 
 
+第四个for循环
+![[Pasted image 20230817102938.png]]
+
+
+预测输入文件的时长
+
+预测文件时长有 三种 策略：
+**1，针对 mpeg 与 mpegts 格式，采用 `estimate_timings_from_pts()` 策略，他的算法是 用数据流 最后一个 AVPacket 的 PTS 减去 第一个 AVPacket 的 PTS，以此获取时长。
+2，如果文件里其中一个流有准确的时长，就以此为标准 复制给其他流。
+3，通过 码率 来预测，`estimate_timings_from_bit_rate()` 会获取文件的大小，然后除以 码率 得到时长。
+```c++
+if (probesize)
+	estimate_timings(ic, old_offset);
+```
+
+```c++
+if ((!strcmp(ic->iformat->name, "mpeg") ||
+	 !strcmp(ic->iformat->name, "mpegts")) &&
+	file_size && (ic->pb->seekable & AVIO_SEEKABLE_NORMAL)) {
+	/* get accurate estimate from the PTSes */
+	estimate_timings_from_pts(ic, old_offset);
+	ic->duration_estimation_method = AVFMT_DURATION_FROM_PTS;
+} else if (has_duration(ic)) {
+	/* at least one component has timings - we use them for all
+	 * the components */
+	fill_all_stream_timings(ic);
+	/* nut demuxer estimate the duration from PTS */
+	if(!strcmp(ic->iformat->name, "nut"))
+		ic->duration_estimation_method = AVFMT_DURATION_FROM_PTS;
+	else
+		ic->duration_estimation_method = AVFMT_DURATION_FROM_STREAM;
+} else {
+	/* less precise: use bitrate info */
+	estimate_timings_from_bit_rate(ic);
+	ic->duration_estimation_method = AVFMT_DURATION_FROM_BITRATE;
+}
+```
 
 # 三，av_read_frame，读取 AVPacket 编码数据
