@@ -8,18 +8,105 @@
         "type": "tabs",
         "children": [
           {
-            "id": "326cd800b5bf8dbf",
+            "id": "d15f6e637a0fe607",
             "type": "leaf",
+            "pinned": true,
             "state": {
               "type": "markdown",
               "state": {
-                "file": "C++语言/C++编译过程.md",
+                "file": "项目/QT音视频播放器.md",
                 "mode": "source",
                 "source": false
-              }
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "adaccfed26397670",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "项目/WebServer/WEBserver.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "f3b3300385cdcf95",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "C++语言/C++11新标准.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "b4717445a8356757",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "面经/面经答案.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "ffc28e5ffe041533",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "数据库/MySQL/MySQL笔记.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "5be6204b83d177dd",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "C++语言/C++基础语法.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
+            }
+          },
+          {
+            "id": "746b56d8da52ad5b",
+            "type": "leaf",
+            "pinned": true,
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "音视频/音视频基础知识.md",
+                "mode": "source",
+                "source": false
+              },
+              "pinned": true
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -85,7 +172,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "C++语言/C++编译过程.md",
+                "file": "C++语言/C++11新标准.md",
                 "collapseAll": true,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +189,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "C++语言/C++编译过程.md",
+                "file": "C++语言/C++11新标准.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +212,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "C++语言/C++编译过程.md"
+                "file": "C++语言/C++11新标准.md"
               }
             }
           },
@@ -136,13 +223,23 @@
               "type": "git-history-view",
               "state": {}
             }
+          },
+          {
+            "id": "af8f67134e7ae482",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency"
+              }
+            }
           }
         ],
         "currentTab": 3
       }
     ],
     "direction": "horizontal",
-    "width": 399.5
+    "width": 342.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -157,44 +254,45 @@
       "obsidian-memos:Memos": false
     }
   },
-  "active": "326cd800b5bf8dbf",
+  "active": "f3b3300385cdcf95",
   "lastOpenFiles": [
-    "CS常识/编码.md",
-    "C++语言/Makefile.md",
-    "C++语言/C++基础语法.md",
-    "C++语言/C++编译过程.md",
-    "CS常识/海康要求.md",
-    "音视频/demuxer解复用.md",
-    "source/Pasted image 20230817102938.png",
-    "source/Pasted image 20230816005358.png",
-    "source/Pasted image 20230816005346.png",
-    "source/Pasted image 20230816005142.png",
-    "工具/git.md",
-    "工具/Linux命令.md",
-    "工具/OPENAI secret key.md",
-    "source/Pasted image 20230814213144.jpg",
-    "音视频/MP4文件.md",
-    "音视频/H.264.md",
-    "source/Pasted image 20230814162054.jpg",
-    "source/Pasted image 20230814162023.jpg",
-    "source/Pasted image 20230814162001.jpg",
-    "source/Pasted image 20230814161806.jpg",
-    "source/Pasted image 20230814161658.jpg",
     "音视频/音视频基础知识.md",
-    "项目/系统设计考虑.md",
-    "CS常识/系统设计.md",
-    "项目/QT音视频播放器.md",
-    "音视频/流媒体.md",
-    "音视频/FFmpeg.md",
-    "项目/WebServer/概述.md",
-    "项目/WebServer/01线程同步机制封装类.md",
-    "C++语言/C++11新标准.md",
+    "C++语言/C++基础语法.md",
+    "数据库/MySQL/MySQL笔记.md",
     "面经/面经答案.md",
-    "面经/面经学习.md",
-    "面经/面试算法.md",
+    "CS常识/设计模式.md",
+    "音视频/H.264.md",
+    "音视频/音视频媒体格式.md",
+    "音视频/FFmpeg.md",
+    "音视频/MP4文件.md",
+    "项目/QT音视频播放器.md",
+    "C++语言/C++11新标准.md",
+    "项目/WebServer/WEBserver.md",
+    "项目/WebServer/02半同步半反应堆线程池.md",
+    "操作系统/操作系统-阿秀.md",
+    "操作系统/操作系统笔记.md",
+    "操作系统/彻底理解 IO多路复用.md",
+    "杂项/未命名.md",
+    "C++语言/QT.md",
     "C++语言/STL模板库.md",
-    "实习信息/投递记录.md",
-    "算法/排列、组合、子集.md",
+    "数据库/Redis/Redis笔记.md",
+    "CS常识/海康要求.md",
+    "CS常识/系统设计.md",
+    "项目/WebServer/01线程同步机制封装类.md",
+    "面经/项目改进.md",
+    "工具/Linux命令.md",
+    "数据库/MySQL/MySQL(QA).md",
+    "source/Pasted image 20230918033320.png",
+    "source/Pasted image 20230918033247.png",
+    "音视频/未确认 882877.crdownload",
+    "source/Pasted image 20230918032743.png",
+    "source/Pasted image 20230918032732.png",
+    "source/Pasted image 20230918032636.png",
+    "source/Pasted image 20230918032623.png",
+    "source/Pasted image 20230918032616.png",
+    "source/Pasted image 20230918032313.png",
+    "source/Pasted image 20230918032251.png",
+    "source/41d24a04723719c60b45fe5c2fb284a.jpg",
     "source",
     "WebTemp",
     "Diary",

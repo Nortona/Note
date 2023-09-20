@@ -1,4 +1,13 @@
 
+![[Pasted image 20230918033320.png]]
+点播服务普遍采用了HTTP作为流媒体协议，H.264作为视频编码格式，AAC作为音频编码格式。
+采用HTTP作为点播协议有以下两点优势：一方面，HTTP是基于TCP协议的应用层协议，媒体传输过程中不会出现丢包等现象，从而保证了视频的质量；
+另一方面，HTTP被绝大部分的Web服务器支持，因而流媒体服务机构不必投资购买额外的流媒体服务器，从而节约了开支。
+点播服务采用的封装格式有多种：MP4，FLV，F4V等，它们之间的区别不是很大。
+视频编码标准和音频编码标准是H.264和AAC。这两种标准分别是当今实际应用中编码效率最高的视频标准和音频标准。
+视频播放器方面，无一例外的都使用了Flash播放器。
+
+
 # 流程
 综合来说播放器的基础工作步骤如下：
 
@@ -268,6 +277,53 @@ if (_seekTime >= 0) {
 	}
 ```
 
-### 11、seek后前面几帧速度快
+### 11、花屏现象
+除了音频队列，解码器中也保留了上一帧视频的信息，而视频发生跳转时，解码器中保留的信息会对解码当前帧产生影响
+
+例如：从3s处跳转到15min处，则3s处的包还残留在队列和解码器中，与15min处的结合会产生"花屏"
+
+因此，清空队列的时候我们也要同时清空解码器的数据
+
+这里的操作是，往队列中放入一个特殊的 packet，当解码线程取到这个 packet 的时候，就执行清除解码器数据的操作
+
+在解码器类头文件中定义“清空”队列包的宏
+
+#define FLUSH_DATA "FLUSH"
+
+
+
+### 12、seek后前面几帧速度快
 
 可能由于音频帧出现问题
+
+
+
+![[Pasted image 20230918032313.png]]
+
+
+
+# 调试输出
+## 1、提取各个流的信息结果
+avformat_oopen_input->avformat_find_stram_info
+
+```
+_fmtCtx 0x5bee1f0
+
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'C:/Users/12543/Videos/walking-dead.mp4':
+
+Metadata:
+major_brand : isom
+minor_version : 512
+compatible_brands: isomiso2avc1mp41
+encoder : Lavf58.45.100
+Duration: 00:00:10.02, start: 0.000000, bitrate: 602 kb/s
+
+Stream #0:0(und): Video: h264 (High) (avc1 / 0x31637661), yuv420p, 720x404 [SAR 1:1 DAR 180:101], 467 kb/s, 24 fps, 24 tbr, 12288 tbn, 48 tbc (default)
+Metadata:
+handler_name : VideoHandler
+
+Stream #0:1(eng): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, stereo, fltp, 128 kb/s (default)
+Metadata:
+handler_name : SoundHandle
+```
+

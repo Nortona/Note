@@ -1649,3 +1649,99 @@ if ((!strcmp(ic->iformat->name, "mpeg") ||
 ```
 
 # 三，av_read_frame，读取 AVPacket 编码数据
+
+`av_read_frame()` 函数的作用是从输入源里面，读取出来一个 `AVPacket`。也可以说 `av_read_frame()` 是一个 `demuxer`（解复用）的函数。
+
+内部流程，在通常情况下是非常简单的，就是调 `avpriv_packet_list_get()` 或者 `read_frame_internal()` 读取出来 `AVPacket`，然后就直接返回了
+
+```c++
+if (!genpts) {
+	ret = s->internal->packet_buffer
+		  ? ff_packet_list_get(&s->internal->packet_buffer,                &s->internal->packet_buffer_end, pkt)
+		  : read_frame_internal(s, pkt);
+	if (ret < 0)
+		return ret;
+	goto return_packet;
+}
+```
+
+```c++
+int ff_packet_list_get(AVPacketList **pkt_buffer,
+                       AVPacketList **pkt_buffer_end,
+                       AVPacket      *pkt)
+{
+    AVPacketList *pktl;
+    av_assert0(*pkt_buffer);
+    pktl        = *pkt_buffer;
+    *pkt        = pktl->pkt;
+    *pkt_buffer = pktl->next;
+    if (!pktl->next)
+        *pkt_buffer_end = NULL;
+    av_freep(&pktl);
+    return 0;
+}
+
+```
+
+
+`packet_buffer` 变量的结构是 `struct PacketList` ，这是一个先进先出的单向链表，
+```c++
+typedef struct PacketList {
+    AVPacket pkt;
+    struct PacketList *next;
+} PacketList;
+```
+因此 `internal->packet_buffer` 是一个缓存队列，如果缓存队列 有数据，就优先从 缓存 里面读取 `AVPacket`。如果缓存为空，就调 `read_frame_internal()` 直接从文件里面读取 `AVPacket`。
+
+`av_read_frame()` 与 `read_frame_internal()` 的最大区别就是， `read_frame_internal()` 会直接从文件读取数据，而 `av_read_frame()` 会优先读缓存（`packet_buffer`）的数据，
+
+#### `packet_buffer` 什么时候不是 `NULL` 呢？
+在 `avforamt_find_streaminfo()` 的时候。`avforamt_find_streaminfo()` 会把 `AVPacket` 放进去 `packet_buffer` 缓存队列
+
+#### `packet_buffer` 什么时候变成 `NULL` 呢？
+当 `avpriv_packet_list_get()` 取完 `packet_buffer` 单向链表的数据的时候，`packet_buffer` 就会变成 `NULL` 了
+
+## read_frame_internal
+`read_frame_internal()` 函数里面的逻辑分为两块，如下：
+### 1，不需要对 packet 进行 parse 解析操作
+MP4，FLV 都是不需要 进行 `parse` 解析的。这种情况下，`read_frame_internal()` 本身没有太多逻辑的，就是直接调 `AVInputFormat` 的 `read_packet` 接口读取到 `packet` ，然后就直接返回了。
+```c++
+if (!st->need_parsing || !st->parser) {
+	/* no parsing needed: we just output the packet as is */
+	compute_pkt_fields(s, st, NULL, pkt, AV_NOPTS_VALUE, AV_NOPTS_VALUE);
+	if ((s->iformat->flags & AVFMT_GENERIC_INDEX) &&
+		(pkt->flags & AV_PKT_FLAG_KEY) && pkt->dts != AV_NOPTS_VALUE) {
+		ff_reduce_index(s, st->index);
+		av_add_index_entry(st, pkt->pos, pkt->dts,
+						   0, 0, AVINDEX_KEYFRAME);
+	}
+	got_packet = 1;
+```
+
+### 2, 需要对 packet 进行 parse 解析操作
+有些场景，在 `AVInputFormat` 的 `read_packet` 接口读取出 packet 之后，不能直接返回，还需要进行 parse 操作，如下：
+```c++
+else if (st->discard < AVDISCARD_ALL) {
+	if ((ret = parse_packet(s, pkt, pkt->stream_index, 0)) < 0)
+		return ret;
+	st->codecpar->sample_rate = st->internal->avctx->sample_rate;
+	st->codecpar->bit_rate = st->internal->avctx->bit_rate;
+	st->codecpar->channels = st->internal->avctx->channels;
+	st->codecpar->channel_layout = st->internal->avctx->channel_layout;
+	st->codecpar->codec_id = st->internal->avctx->codec_id;
+}
+```
+`h.264` 裸流就是这么一个场景
+
+`h.264` 的 输入格式 `AVInputFormat` 的 `read_packet` 接口是 `ff_raw_read_partial_packet()` 函数，这个函数默认 每次只读取 1024 字节。
+
+这肯定不是一个完整的 NALU，所以就需要执行 `parse_packet()` 来 **切割 或者 拼接 成一个完整的 NALU**，`parse_packet()` 里面还会进行解析 `sps`，`pps`，`sei` 等等信息，把需要的参数提取出来。
+
+`parse_packet()` 函数的返回值如果大于 0 ，代表已经 切割 或者 拼接 成一个完整的 NALU，并且已经放到 `s->internal->parse_queue` 里。
+
+所以在 `parse_packet()` 之后，就会从 `parse_queue` 里面拿出来 `AVPacket`，返回给上层，如下：
+```c++
+if (!got_packet && s->internal->parse_queue)
+    ret = ff_packet_list_get(&s->internal->parse_queue, &s->internal->parse_queue_end, pkt);
+```
+

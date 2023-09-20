@@ -339,7 +339,7 @@ bar( X &__result )
 - 可以被非static成员函数任意访问。 static成员函数：不具有this指针，无法访问类对象的非static成员变量和非static成员函数；
 - 不能被声明为const、虚函数和volatile；可以被非static成员函数任意访问 
 
-# const 
+# const *
 ## 不考虑类的情况 
 - const常量在定义时必须初始化，之后无法更改 const形参可以接收const和非const类型的实参，例如// i 可以是 int 型或者 const int 型void fun(const int& i){ //...} 
 ## 考虑类的情况 
